@@ -95,7 +95,8 @@ export const signupController = async (req: Request, res: Response) => {
         message: 'USER_CREATED_VERIFY_EMAIL',
         email: data.email,
         isVerified: false,
-        devOtp: otp
+        devOtp: otp,
+        mailNote: 'If email fail to arrive, check your terminal for OTP.'
       })
     )
   } catch (err: any) {

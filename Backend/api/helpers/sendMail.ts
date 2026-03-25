@@ -6,19 +6,36 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+const isGmail = process.env.MAIL_HOST?.includes('gmail');
+
 const transporter = nodemailer.createTransport({
-  service: process.env.MAIL_HOST?.includes('gmail') ? 'gmail' : undefined,
+  service: isGmail ? 'gmail' : undefined,
   host: process.env.MAIL_HOST || 'smtp.gmail.com',
-  port: Number(process.env.MAIL_PORT) || 587,
-  secure: process.env.MAIL_PORT === '465',
+  port: isGmail ? 465 : (Number(process.env.MAIL_PORT) || 587),
+  secure: isGmail ? true : (process.env.MAIL_PORT === '465'),
   auth: {
     user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS, // Should be an App Password for Gmail
+    pass: process.env.MAIL_PASS,
   },
   tls: {
     rejectUnauthorized: false
   }
 })
+
+console.log('--- MAIL CONFIGURATION ---')
+console.log(`Mail Host: ${process.env.MAIL_HOST}`)
+console.log(`Mail User: ${process.env.MAIL_USER}`)
+console.log(`Mail From: ${process.env.MAIL_FROM}`)
+console.log('---------------------------')
+
+// Verify SMTP connection
+transporter.verify((error, success) => {
+  if (error) {
+    console.error('❌ SMTP Connection Error:', error);
+  } else {
+    console.log('✅ SMTP Server is ready to take our messages');
+  }
+});
 
 const sendMail = async (email: string, template: string, data: any) => {
   const templatePath = path.join(__dirname, '../../views', template)

@@ -12,3 +12,4 @@ dist/
 .history/
 coverage/
 .nyc_output/
+.env.example

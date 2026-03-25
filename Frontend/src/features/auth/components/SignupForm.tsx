@@ -37,7 +37,12 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToLogin }) =
   const onSubmit = async (data: SignupInput) => {
     setIsLoading(true);
     try {
-      await authService.signup(data);
+      const response = await authService.signup(data);
+      if (response.data?.devOtp) {
+        console.log('--- DEVELOPMENT OTP ---');
+        console.log(`The verification code is: ${response.data.devOtp}`);
+        console.log('-----------------------');
+      }
       toast.success('Account Ready! We sent a code to verify.');
       onSuccess(data.email);
     } catch (error: any) {

@@ -40,6 +40,7 @@ export interface AuthResponse {
   data: User & {
     accessToken?: string;
     refreshToken?: string;
+    devOtp?: string;
   };
 }
 
