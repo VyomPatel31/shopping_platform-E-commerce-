@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
-    "@types/chalk": "^0.4.31",
+    "@types/chalk": "^2.2.4",
     "@types/connect-mongodb-session": "^2.4.8",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
