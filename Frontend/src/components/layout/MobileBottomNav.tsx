@@ -16,11 +16,11 @@ const MobileBottomNav: React.FC = () => {
 
     // Only show on mobile
     return (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-3 z-[100] shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
-            <div className="flex justify-between items-center max-w-md mx-auto">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-[100] shadow-[0_-10px_20px_rgba(0,0,0,0.05)] pb-safe">
+            <div className="flex w-full h-16 items-center">
                 <NavLink 
                     to="/" 
-                    className={({ isActive }) => `flex flex-col items-center space-y-1 transition-all ${isActive ? 'text-black' : 'text-gray-300'}`}
+                    className={({ isActive }) => `flex-1 flex flex-col items-center justify-center space-y-1 transition-all ${isActive ? 'text-black' : 'text-gray-300'}`}
                 >
                     <Home className="w-5 h-5" />
                     <span className="text-[8px] font-black uppercase tracking-widest leading-none">Home</span>
@@ -28,20 +28,20 @@ const MobileBottomNav: React.FC = () => {
 
                 <NavLink 
                     to="/products" 
-                    className={({ isActive }) => `flex flex-col items-center space-y-1 transition-all ${isActive ? 'text-black' : 'text-gray-300'}`}
+                    className={({ isActive }) => `flex-1 flex flex-col items-center justify-center space-y-1 transition-all ${isActive ? 'text-black' : 'text-gray-300'}`}
                 >
                     <Search className="w-5 h-5" />
-                    <span className="text-[8px] font-black uppercase tracking-widest leading-none">Catalog</span>
+                    <span className="text-[8px] font-black uppercase tracking-widest leading-none">Search</span>
                 </NavLink>
 
                 <NavLink 
                     to="/wishlist" 
-                    className={({ isActive }) => `flex flex-col items-center space-y-1 transition-all ${isActive ? 'text-black' : 'text-gray-300'}`}
+                    className={({ isActive }) => `flex-1 flex flex-col items-center justify-center space-y-1 transition-all ${isActive ? 'text-black' : 'text-gray-300'}`}
                 >
                     <div className="relative">
                         <Heart className="w-5 h-5" />
                         {wishlistItems.length > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-black text-white text-[6px] font-bold w-3 h-3 flex items-center justify-center rounded-full">
+                            <span className="absolute -top-1.5 -right-1.5 bg-black text-white text-[7px] font-bold w-3.5 h-3.5 flex items-center justify-center rounded-full border border-white">
                                 {wishlistItems.length}
                             </span>
                         )}
@@ -51,13 +51,13 @@ const MobileBottomNav: React.FC = () => {
 
                 <NavLink 
                     to="/cart" 
-                    className={({ isActive }) => `flex flex-col items-center space-y-1 transition-all ${isActive ? 'text-black' : 'text-gray-300'}`}
+                    className={({ isActive }) => `flex-1 flex flex-col items-center justify-center space-y-1 transition-all ${isActive ? 'text-black' : 'text-gray-300'}`}
                 >
                     <div className="relative">
                         <ShoppingBag className="w-5 h-5" />
                         {cartItems.length > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-black text-white text-[6px] font-bold w-3 h-3 flex items-center justify-center rounded-full">
-                                {cartItems.length}
+                            <span className="absolute -top-1.5 -right-1.5 bg-black text-white text-[7px] font-bold w-3.5 h-3.5 flex items-center justify-center rounded-full border border-white">
+                                {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
                             </span>
                         )}
                     </div>
@@ -66,7 +66,7 @@ const MobileBottomNav: React.FC = () => {
 
                 <NavLink 
                     to="/profile" 
-                    className={({ isActive }) => `flex flex-col items-center space-y-1 transition-all ${isActive ? 'text-black' : 'text-gray-300'}`}
+                    className={({ isActive }) => `flex-1 flex flex-col items-center justify-center space-y-1 transition-all ${isActive ? 'text-black' : 'text-gray-300'}`}
                 >
                     <User className="w-5 h-5" />
                     <span className="text-[8px] font-black uppercase tracking-widest leading-none">Account</span>

@@ -397,52 +397,52 @@ const AdminDashboard: React.FC = () => {
       <main className="pt-24 px-4 max-w-7xl mx-auto">
         {/* Stats Grid */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
-            <div className="bg-white p-5 rounded-sm shadow-sm border-l-4 border-blue-500 flex flex-col gap-1">
-              <p className="text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 mb-8 md:mb-10">
+            <div className="bg-white p-4 md:p-5 rounded-xl shadow-sm border-l-4 border-blue-500 flex flex-col gap-1">
+              <p className="text-[10px] md:text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
                 <Package className="w-3 h-3" /> Products
               </p>
-              <h2 className="text-3xl font-black text-gray-900">
+              <h2 className="text-xl md:text-3xl font-black text-gray-900 leading-tight">
                 {stats.productCount}
               </h2>
             </div>
-            <div className="bg-white p-5 rounded-sm shadow-sm border-l-4 border-green-500 flex flex-col gap-1">
-              <p className="text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
-                <IndianRupee className="w-3 h-3" /> Monthly Revenue
+            <div className="bg-white p-4 md:p-5 rounded-xl shadow-sm border-l-4 border-green-500 flex flex-col gap-1">
+              <p className="text-[10px] md:text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
+                <IndianRupee className="w-3 h-3" /> Monthly Rev
               </p>
-              <h2 className="text-2xl font-black text-green-600">
-                ₹{stats.monthlyRevenue?.toFixed(2)}
+              <h2 className="text-lg md:text-2xl font-black text-green-600 leading-tight">
+                ₹{stats.monthlyRevenue?.toLocaleString()}
               </h2>
             </div>
-            <div className="bg-white p-5 rounded-sm shadow-sm border-l-4 border-teal-500 flex flex-col gap-1">
-              <p className="text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
-                <TrendingUp className="w-3 h-3" /> Total Revenue
+            <div className="bg-white p-4 md:p-5 rounded-xl shadow-sm border-l-4 border-teal-500 flex flex-col gap-1">
+              <p className="text-[10px] md:text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
+                <TrendingUp className="w-3 h-3" /> Total Rev
               </p>
-              <h2 className="text-2xl font-black text-teal-600">
-                ₹{stats.totalRevenue?.toFixed(2)}
+              <h2 className="text-lg md:text-2xl font-black text-teal-600 leading-tight">
+                ₹{stats.totalRevenue?.toLocaleString()}
               </h2>
             </div>
-            <div className="bg-white p-5 rounded-sm shadow-sm border-l-4 border-orange-500 flex flex-col gap-1">
-              <p className="text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
+            <div className="bg-white p-4 md:p-5 rounded-xl shadow-sm border-l-4 border-orange-500 flex flex-col gap-1">
+              <p className="text-[10px] md:text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
                 <ShoppingCart className="w-3 h-3" /> Orders
               </p>
-              <h2 className="text-3xl font-black text-gray-900">
+              <h2 className="text-xl md:text-3xl font-black text-gray-900 leading-tight">
                 {stats.orderCount}
               </h2>
             </div>
-            <div className="bg-white p-5 rounded-sm shadow-sm border-l-4 border-purple-500 flex flex-col gap-1">
-              <p className="text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
+            <div className="bg-white p-4 md:p-5 rounded-xl shadow-sm border-l-4 border-purple-500 flex flex-col gap-1">
+              <p className="text-[10px] md:text-xs font-bold text-gray-500 uppercase flex items-center gap-1">
                 <MessageSquare className="w-3 h-3" /> Reviews
               </p>
-              <h2 className="text-3xl font-black text-gray-900">
+              <h2 className="text-xl md:text-3xl font-black text-gray-900 leading-tight">
                 {stats.reviewCount}
               </h2>
             </div>
           </div>
         )}
 
-        {/* Tabs */}
-        <div className="flex gap-4 mb-8 border-b border-gray-300">
+        {/* Tabs - Scrollable on mobile */}
+        <div className="flex gap-4 md:gap-8 mb-8 border-b border-gray-300 overflow-x-auto pb-1 scrollbar-hide">
           <button
             onClick={() => setActiveTab("products")}
             className={`pb-3 px-1 font-bold text-sm flex items-center gap-2 transition-colors border-b-2 ${activeTab === "products"

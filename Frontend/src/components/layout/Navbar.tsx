@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, LogOut, ShoppingBag, Heart, Menu, X, User } from 'lucide-react';
+import { LogOut, Menu, X, User, Search } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useCartStore } from '../../features/cart/store/cartStore';
 import { useSearchStore } from '../../store/searchStore';
@@ -10,14 +10,13 @@ import { useWishlistStore } from '../../features/wishlist/store/wishlistStore';
 
 const Navbar: React.FC = () => {
   const { user, logout, isAuthenticated } = useAuthStore();
-  const { items, fetchCart } = useCartStore();
+  const { fetchCart } = useCartStore();
   const { fetchWishlist } = useWishlistStore();
   const navigate = useNavigate();
   const { query, setQuery } = useSearchStore();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [showMobileSearch, setShowMobileSearch] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -41,10 +40,6 @@ const Navbar: React.FC = () => {
     setShowLogoutConfirm(false);
     setMobileMenuOpen(false);
   };
-
-  const { items: wishlistItems } = useWishlistStore();
-  const cartItemsCount = items.reduce((acc, item) => acc + item.quantity, 0);
-  const wishlistItemsCount = wishlistItems.length;
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md py-3 shadow-sm border-b border-gray-100' : 'bg-white py-5'}`}>
@@ -85,33 +80,6 @@ const Navbar: React.FC = () => {
           )}
 
           <div className="flex items-center space-x-2 md:space-x-5">
-            <button 
-              onClick={() => setShowMobileSearch(!showMobileSearch)}
-              className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <Search className="w-5 h-5 text-black" />
-            </button>
-
-            <Link to="/wishlist" className="relative group p-2 hover:bg-gray-100 rounded-full transition-colors">
-               <Heart className="w-5 h-5 text-black" />
-               {wishlistItemsCount > 0 && (
-                 <span className="absolute -top-1 -right-1 bg-black text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                   {wishlistItemsCount}
-                 </span>
-               )}
-            </Link>
-
-            <Link to="/cart" className="relative group p-2 hover:bg-gray-100 rounded-full transition-colors">
-                <div className="relative">
-                  <ShoppingBag className="w-5 h-5 text-black" />
-                  {cartItemsCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-black text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                      {cartItemsCount}
-                    </span>
-                  )}
-                </div>
-            </Link>
-
             <div className="h-6 w-[1px] bg-gray-200 hidden md:block"></div>
 
             {isAuthenticated ? (
@@ -137,46 +105,18 @@ const Navbar: React.FC = () => {
                 </Link>
             )}
 
-            {/* Mobile Menu Icon */}
+            {/* Mobile Menu Icon - Solid Style */}
             <button 
               onClick={() => {
                 setMobileMenuOpen(!mobileMenuOpen);
-                setShowMobileSearch(false);
               }}
-              className="md:hidden text-black p-2 z-50"
+              className="md:hidden bg-black text-white p-2.5 rounded-xl z-50 shadow-lg shadow-black/20"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
       </div>
-
-      {/* MOBILE SEARCH BAR */}
-      <AnimatePresence>
-        {showMobileSearch && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden bg-white border-b border-gray-100 px-6 py-4"
-          >
-            <div className="relative w-full">
-              <input
-                type="text"
-                autoFocus
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  if (window.location.pathname !== '/products') navigate('/products');
-                }}
-                placeholder="Search products..."
-                className="w-full bg-gray-50 border border-gray-200 rounded-full py-3 px-6 pl-12 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all"
-              />
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Logout Confirmation Modal */}
       <AnimatePresence>
