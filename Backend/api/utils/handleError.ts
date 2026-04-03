@@ -1,9 +1,8 @@
 import { Response } from 'express'
 
 const handleError = (res: Response, err: any) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.log(err)
-  }
+  // Always log errors in production/staging for debugging on hosting platforms like Render
+  console.error('SERVER_ERROR:', err)
 
   const response = {
     success: false,
