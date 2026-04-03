@@ -124,7 +124,7 @@ const ProductDetailPage: React.FC = () => {
     <div className="min-h-screen bg-white text-black">
       <Navbar />
       
-      <main className="pt-24 md:pt-32 pb-20 md:pb-32 px-4 md:px-6 max-w-[1400px] mx-auto overflow-x-hidden">
+      <main className="pt-24 md:pt-32 pb-40 md:pb-32 px-4 md:px-6 max-w-[1400px] mx-auto overflow-x-hidden">
         <motion.button
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
@@ -316,6 +316,22 @@ const ProductDetailPage: React.FC = () => {
            </div>
         </div>
       </main>
+
+      {/* STICKY MOBILE PURCHASE BAR */}
+      <div className="md:hidden fixed bottom-[60px] left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-gray-100 p-4 z-[90] flex items-center gap-4 animate-in slide-in-from-bottom duration-500">
+        <div className="flex-1">
+            <p className="text-[8px] font-black uppercase tracking-widest text-gray-400 leading-none">Price</p>
+            <p className="text-xl font-black text-black tracking-tighter">₹{product.price.toLocaleString()}</p>
+        </div>
+        <button 
+            onClick={handleAddToCart}
+            className="flex-[2] bg-black text-white h-12 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center space-x-2 shadow-xl shadow-black/20"
+        >
+            <ShoppingCart className="w-4 h-4" />
+            <span>Add to Bag</span>
+        </button>
+      </div>
+
       <Footer />
     </div>
   );

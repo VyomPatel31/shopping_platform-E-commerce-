@@ -58,7 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       className="group bg-white border border-gray-100 rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:border-black hover:shadow-xl h-full relative"
     >
       {/* Product Image */}
-      <Link to={`/products/${product._id}`} className="block relative w-full h-[280px] overflow-hidden bg-gray-50 border-b border-gray-100 flex items-center justify-center p-6">
+      <Link to={`/products/${product._id}`} className="block relative w-full h-[180px] md:h-[280px] overflow-hidden bg-gray-50 border-b border-gray-100 flex items-center justify-center p-4 md:p-6">
         <img
           src={imageUrl}
           alt={product.name}
@@ -69,25 +69,25 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="absolute top-4 right-4 md:translate-x-12 md:opacity-0 md:group-hover:translate-x-0 md:group-hover:opacity-100 transition-all duration-300 flex flex-col space-y-2 z-20">
           <button
             onClick={handleWishlist}
-            className={`w-10 h-10 md:w-9 md:h-9 rounded-full flex items-center justify-center border transition-all shadow-lg ${isInWishlist ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-200 hover:bg-black hover:text-white hover:border-black'}`}
+            className={`w-9 h-9 md:w-9 md:h-9 rounded-full flex items-center justify-center border transition-all shadow-lg ${isInWishlist ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-200 hover:bg-black hover:text-white hover:border-black'}`}
           >
-            <Heart className={`w-4 h-4 ${isInWishlist ? 'fill-current' : ''}`} />
+            <Heart className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isInWishlist ? 'fill-current' : ''}`} />
           </button>
           <button
             onClick={handleAddToCart}
-            className="w-10 h-10 md:w-9 md:h-9 bg-white text-black rounded-full flex items-center justify-center border border-gray-200 hover:bg-black hover:text-white hover:border-black transition-all shadow-lg"
+            className="w-9 h-9 md:w-9 md:h-9 bg-white text-black rounded-full flex items-center justify-center border border-gray-200 hover:bg-black hover:text-white hover:border-black transition-all shadow-lg"
           >
-            <ShoppingBag className="w-4 h-4" />
+            <ShoppingBag className="w-3.5 h-3.5 md:w-4 md:h-4" />
           </button>
         </div>
       </Link>
 
       {/* Product Content */}
-      <div className="p-6 flex flex-col flex-1">
+      <div className="p-3 md:p-6 flex flex-col flex-1">
         <div className="space-y-1 mb-4">
-          <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest leading-none">{(product.category || 'Lifestyle').toUpperCase()}</span>
+          <span className="text-[8px] md:text-[10px] uppercase font-bold text-gray-400 tracking-widest leading-none">{(product.category || 'Lifestyle').toUpperCase()}</span>
           <Link to={`/products/${product._id}`} className="block">
-            <h3 className="text-md font-black text-black line-clamp-2 leading-tight uppercase tracking-tighter h-12 group-hover:text-gray-500 transition-colors">{product.name}</h3>
+            <h3 className="text-xs md:text-md font-black text-black line-clamp-2 leading-tight uppercase tracking-tighter h-8 md:h-12 group-hover:text-gray-500 transition-colors">{product.name}</h3>
           </Link>
           <div className="flex items-center space-x-1 pt-1 opacity-50 group-hover:opacity-100 transition-opacity">
             <div className="flex">
@@ -95,16 +95,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 <Star key={i} className={`w-3 h-3 ${i < Math.floor(product.rating || 4) ? 'text-black fill-current' : 'text-gray-200'}`} />
               ))}
             </div>
-            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest ml-1">({product.numReviews || 0})</span>
+            <span className="text-[8px] md:text-[10px] text-gray-400 font-bold uppercase tracking-widest ml-1">({product.numReviews || 0})</span>
           </div>
         </div>
 
         <div className="mt-auto flex items-end justify-between border-t border-gray-100 pt-4">
           <div className="flex flex-col">
-            <span className="text-[8px] uppercase tracking-widest text-gray-400 font-black mb-1">MRP / INR</span>
+            <span className="text-[7px] md:text-[8px] uppercase tracking-widest text-gray-400 font-black mb-1">MRP / INR</span>
             <div className="flex items-baseline text-black font-black">
-              <span className="text-2xl tracking-tighter">₹{Math.floor(product.price)}</span>
-              <span className="text-xs opacity-60">{(product.price % 1).toFixed(2).substring(1)}</span>
+              <span className="text-lg md:text-2xl tracking-tighter">₹{Math.floor(product.price)}</span>
+              <span className="text-[10px] md:text-xs opacity-60">{(product.price % 1).toFixed(2).substring(1)}</span>
             </div>
           </div>
 

@@ -18,7 +18,7 @@ const ProductsPage: React.FC = () => {
         <div className="min-h-screen bg-white">
             <Navbar />
             
-            <main className="pt-32 pb-20 px-4 md:px-12 max-w-[1400px] mx-auto">
+            <main className="pt-32 pb-32 md:pb-20 px-4 md:px-12 max-w-[1400px] mx-auto">
                 {/* Header Section */}
                 <div className="mb-12 space-y-4">
                     <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-black leading-none">

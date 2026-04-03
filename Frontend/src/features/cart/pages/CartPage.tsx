@@ -181,7 +181,7 @@ const CartPage: React.FC = () => {
     <div className="min-h-screen bg-white text-black flex flex-col">
       <Navbar />
 
-      <main className="pt-24 md:pt-40 pb-24 px-4 md:px-6 max-w-[1400px] mx-auto w-full">
+      <main className="pt-24 md:pt-40 pb-32 md:pb-24 px-4 md:px-6 max-w-[1400px] mx-auto w-full">
         <div className="flex flex-col md:flex-row items-baseline space-x-0 md:space-x-6 mb-8 md:mb-16 border-b-4 md:border-b-8 border-black pb-6 md:pb-8 overflow-hidden">
           <h1 className="text-3xl md:text-6xl font-black uppercase tracking-tighter shrink-0 mb-4 md:mb-0">Your Shopping Cart</h1>
           <div className="hidden md:flex flex-1 h-2 bg-gray-50 items-center px-4">

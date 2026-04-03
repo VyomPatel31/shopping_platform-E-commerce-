@@ -11,7 +11,7 @@ const HomePage: React.FC = () => {
         <div className="min-h-screen bg-white">
             <Navbar />
 
-            <main className="pt-24 pb-24 px-4 md:px-12 max-w-[1400px] mx-auto overflow-x-hidden">
+            <main className="pt-24 pb-32 md:pb-24 px-4 md:px-12 max-w-[1400px] mx-auto overflow-x-hidden">
                 {/* HERO SECTION - Monochrome Modern */}
                 <header className="mb-16 md:mb-24">
                     <div className="relative w-full h-[50vh] md:h-[70vh] rounded-3xl overflow-hidden bg-gray-50 flex items-center justify-center border border-gray-100 group shadow-sm">
@@ -66,7 +66,7 @@ const HomePage: React.FC = () => {
                         <Link to="/products" className="text-[8px] md:text-[10px] font-black text-black border-b-2 border-black uppercase tracking-[0.3em] hover:text-gray-500 hover:border-gray-500 transition-all whitespace-nowrap ml-4">Browse all</Link>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                         {[
                             { name: 'Timepieces', desc: 'Precision & Style', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800' },
                             { name: 'Aesthetics', desc: 'Daily Essentials', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800' },
@@ -76,9 +76,9 @@ const HomePage: React.FC = () => {
                             <motion.div
                                 whileHover={{ y: -8 }}
                                 key={cat.name}
-                                className="group relative h-[450px] rounded-3xl overflow-hidden border border-gray-100 bg-gray-50"
+                                className="group relative h-[250px] md:h-[450px] rounded-3xl overflow-hidden border border-gray-100 bg-gray-50 flex flex-col"
                             >
-                                <img src={cat.img} className="absolute inset-0 w-full h-full object-cover  transition-all duration-1000 group-hover:scale-105" alt="" />
+                                <img src={cat.img} className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-105" alt="" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-white via-white/5 to-transparent z-10" />
 
                                 <div className="absolute bottom-6 left-6 z-20 space-y-2">

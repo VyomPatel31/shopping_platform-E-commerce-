@@ -74,7 +74,7 @@ const ProductList: React.FC<ProductListProps> = ({ category, minPrice, maxPrice,
 
     return (
         <div className="flex flex-col space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
                 {products.map((product: any, index: number) => (
                     <motion.div
                         key={product._id}
