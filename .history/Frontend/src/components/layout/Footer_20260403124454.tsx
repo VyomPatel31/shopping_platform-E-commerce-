@@ -1,5 +1,5 @@
 import React from 'react';
-import { Apple, Smartphone, Instagram, Twitter, Linkedin, MessageSquare } from 'lucide-react';
+import { Apple, Smartphone, Instagram, Twitter, Github, Linkedin, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {

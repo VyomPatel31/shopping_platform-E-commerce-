@@ -31,8 +31,8 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https://images.unsplash.com", process.env.BACKEND_URL || "http://localhost:5000"],
-      connectSrc: ["'self'", process.env.BACKEND_URL || "http://localhost:5000"],
+      imgSrc: ["'self'", "data:", "https://images.unsplash.com", "http://localhost:5000"],
+      connectSrc: ["'self'", "http://localhost:5000"],
     },
   },
 }))
