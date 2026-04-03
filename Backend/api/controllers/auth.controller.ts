@@ -23,15 +23,16 @@ import isIDGood from '../utils/isIDGood.js'
 export const signupController = async (req: Request, res: Response) => {
   try {
     const data = req.body
-    console.log('Signup attempt for:', data.email)
+    const email = data.email.toLowerCase().trim()
+    console.log('Signup attempt for:', email)
 
     // Check if email is admin email and set role accordingly
     const adminEmails = ['admin123@gmail.com', 'patelvyom734@gmail.com'];
-    const isAdminEmail = adminEmails.includes(data.email.toLowerCase().trim());
+    const isAdminEmail = adminEmails.includes(email);
     const role = isAdminEmail ? 'admin' : 'user';
-    console.log('Assigning role:', role, 'for email:', data.email);
+    console.log('Assigning role:', role, 'for email:', email);
 
-    let user = await User.findOne({ email: data.email })
+    let user = await User.findOne({ email })
 
     if (user?.isVerified) {
       console.log('User already exists and is verified:', data.email)
@@ -71,14 +72,14 @@ export const signupController = async (req: Request, res: Response) => {
     const validTill = new Date(Date.now() + 30 * 60000)
 
     await Verifications.findOneAndUpdate(
-      { email: data.email },
+      { email },
       { otp, validTill },
       { upsert: true }
     )
     console.log('Verification record updated for signup')
 
     try {
-      await sendMail(data.email, 'otp.ejs', { otp })
+      await sendMail(email, 'otp.ejs', { otp }, 'Account Verification PIN')
       console.log('Signup OTP email sent successfully')
     } catch (mailError) {
       console.error('Error sending signup OTP email:', mailError)
@@ -110,11 +111,13 @@ export const signupController = async (req: Request, res: Response) => {
 export const loginController = async (req: Request, res: Response) => {
   try {
     const data = req.body
+    const email = data.email.toLowerCase().trim()
+    console.log('Login attempt for email:', email)
 
-    const user: any = await User.findOne({ email: data.email }).select('+password').lean();
+    const user: any = await User.findOne({ email }).select('+password').lean();
 
     if (!user) {
-      console.log('User not found:', data.email)
+      console.log('User not found during login:', email)
       throw buildErrorObject(httpStatus.UNAUTHORIZED, 'INVALID_CREDENTIALS')
     }
 
@@ -183,9 +186,10 @@ export const logoutController = async (req: Request, res: Response) => {
 export const sendOtpController = async (req: Request, res: Response) => {
   try {
     const data = req.body
-    console.log('Sending OTP to:', data.email)
+    const email = data.email.toLowerCase().trim()
+    console.log('Sending OTP to:', email)
 
-    const existingUser = await User.findOne({ email: data.email })
+    const existingUser = await User.findOne({ email })
 
     if (existingUser?.isVerified) {
       throw buildErrorObject(httpStatus.CONFLICT, 'USER_ALREADY_EXISTS')
@@ -205,14 +209,14 @@ export const sendOtpController = async (req: Request, res: Response) => {
     const validTill = new Date(Date.now() + 30 * 60000)
 
     await Verifications.findOneAndUpdate(
-      { email: data.email },
+      { email },
       { otp, validTill },
       { upsert: true }
     )
     console.log('Verification record updated')
 
     try {
-      await sendMail(data.email, 'otp.ejs', { otp })
+      await sendMail(email, 'otp.ejs', { otp }, 'Your Verification PIN')
       console.log('OTP email sent successfully')
     } catch (mailError) {
       console.error('Error sending OTP email:', mailError)
@@ -286,16 +290,24 @@ export const verifyOtpController = async (req: Request, res: Response) => {
 export const forgotPasswordController = async (req: Request, res: Response) => {
   try {
     const data = req.body
+    const email = data.email.toLowerCase().trim()
+    console.log('Forgot password request for:', email)
 
-    const user = await User.findOne({ email: data.email })
+    // Use a case-insensitive search for robust lookup
+    const user = await User.findOne({ email: { $regex: new RegExp(`^${email}$`, 'i') } })
 
     if (!user) {
+      console.log('❌ Forgot password requested for non-existent user:', email)
+      // Log all existing users to debug if needed
       return res.status(httpStatus.OK).json(
         buildResponse(httpStatus.OK, {
           message: 'EMAIL_SENT',
+          debug: 'USER_NOT_FOUND'
         })
       )
     }
+
+    console.log('✅ User found for password reset:', user.email)
 
     // Generate and send OTP for password reset
     const otp = otpGenerator.generate(4, {
@@ -303,23 +315,23 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
       specialChars: false,
     })
     
-    console.log('Password Reset OTP:', otp)
+    console.log('Password Reset OTP generated:', otp)
     // Log for easier dev testing
     console.log('================================================')
-    console.log(`🔑 PASSWORD RESET PIN for ${data.email}: ${otp}`)
+    console.log(`🔑 PASSWORD RESET PIN for ${email}: ${otp}`)
     console.log('================================================')
 
     const validTill = new Date(Date.now() + 30 * 60000)
 
     await Verifications.findOneAndUpdate(
-      { email: data.email },
+      { email },
       { otp, validTill },
       { upsert: true }
     )
 
     try {
-      await sendMail(data.email, 'otp.ejs', { otp })
-      console.log('Reset PIN email sent successfully')
+      await sendMail(email, 'otp.ejs', { otp }, 'Password Reset PIN')
+      console.log('Reset PIN email sent successfully for:', email)
     } catch (mailError) {
       console.error('Error sending reset PIN email:', mailError)
       if (process.env.NODE_ENV === 'production') {

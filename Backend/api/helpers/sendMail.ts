@@ -6,13 +6,8 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const isGmail = process.env.MAIL_HOST?.includes('gmail');
-
 const transporter = nodemailer.createTransport({
-  service: isGmail ? 'gmail' : undefined,
-  host: process.env.MAIL_HOST || 'smtp.gmail.com',
-  port: isGmail ? 465 : (Number(process.env.MAIL_PORT) || 587),
-  secure: isGmail ? true : (process.env.MAIL_PORT === '465'),
+  service: 'gmail',
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
@@ -23,7 +18,6 @@ const transporter = nodemailer.createTransport({
 })
 
 console.log('--- MAIL CONFIGURATION ---')
-console.log(`Mail Host: ${process.env.MAIL_HOST}`)
 console.log(`Mail User: ${process.env.MAIL_USER}`)
 console.log(`Mail From: ${process.env.MAIL_FROM}`)
 console.log('---------------------------')
@@ -37,18 +31,31 @@ transporter.verify((error, success) => {
   }
 });
 
-const sendMail = async (email: string, template: string, data: any) => {
+const sendMail = async (email: string, template: string, data: any, subject?: string) => {
+  if (!process.env.MAIL_USER || !process.env.MAIL_PASS) {
+    console.warn('⚠️ Warning: Email credentials missing in environment variables.');
+    return;
+  }
+
   const templatePath = path.join(__dirname, '../../views', template)
   const html = await ejs.renderFile(templatePath, data) as string
 
   const mailOptions = {
-    from: process.env.MAIL_FROM!,
+    from: process.env.MAIL_FROM || process.env.MAIL_USER,
     to: email,
-    subject: 'Verification OTP',
+    subject: subject || 'Notification',
     html,
   }
 
-  return await transporter.sendMail(mailOptions)
+  try {
+    console.log(`📨 Attempting to send ${subject || 'Notification'} email to: ${email}`)
+    const info = await transporter.sendMail(mailOptions)
+    console.log('📧 Email sent successfully:', info.messageId)
+    return info
+  } catch (error) {
+    console.error('🚨 SMTP Error sending email:', error)
+    throw error
+  }
 }
 
 export default sendMail

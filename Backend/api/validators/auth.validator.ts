@@ -13,7 +13,9 @@ const validateSignup = [
     .exists()
     .withMessage('EMAIL_MISSING')
     .isEmail()
-    .withMessage('EMAIL_NOT_VALID'),
+    .withMessage('EMAIL_NOT_VALID')
+    .trim()
+    .normalizeEmail({ gmail_remove_dots: false }),
   check('password')
     .exists()
     .withMessage('PASSWORD_MISSING')
@@ -32,7 +34,9 @@ const validateLogin = [
     .exists()
     .withMessage('EMAIL_MISSING')
     .isEmail()
-    .withMessage('EMAIL_NOT_VALID'),
+    .withMessage('EMAIL_NOT_VALID')
+    .trim()
+    .normalizeEmail({ gmail_remove_dots: false }),
   check('password')
     .exists()
     .withMessage('PASSWORD_MISSING')
@@ -49,7 +53,9 @@ const validateVerifyOTP = [
     .exists()
     .withMessage('EMAIL_MISSING')
     .isEmail()
-    .withMessage('EMAIL_NOT_VALID'),
+    .withMessage('EMAIL_NOT_VALID')
+    .trim()
+    .normalizeEmail({ gmail_remove_dots: false }),
   check('otp')
     .exists()
     .withMessage('OTP_MISSING')
@@ -66,7 +72,9 @@ const validateForgotPassword = [
     .exists()
     .withMessage('EMAIL_MISSING')
     .isEmail()
-    .withMessage('EMAIL_NOT_VALID'),
+    .withMessage('EMAIL_NOT_VALID')
+    .trim()
+    .normalizeEmail({ gmail_remove_dots: false }),
   (req: Request, res: Response, next: NextFunction) => {
     validateRequest(req, res, next)
   },

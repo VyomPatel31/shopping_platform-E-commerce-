@@ -22,7 +22,11 @@ const ForgotPassForm: React.FC<ForgotPassFormProps> = ({ onBackToLogin, onSucces
 
     setIsLoading(true);
     try {
-      await authService.forgotPassword(email);
+      const response = await authService.forgotPassword(email);
+      // Backend returns debug: 'USER_NOT_FOUND' if user exists but query fails
+      if (response.data?.debug === 'USER_NOT_FOUND') {
+        console.warn('⚠️ User not found in database. Email was NOT sent.');
+      }
       toast.success('Security PIN dispatched.');
       onSuccess(email);
     } catch (error: any) {
