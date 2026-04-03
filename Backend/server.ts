@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-import express from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import session from 'express-session'
 import MongoDBStore from 'connect-mongodb-session'
 import path from 'path'
@@ -50,7 +50,7 @@ app.use(cookieParser())
 // Serve uploaded product images statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   console.log(`${req.method} ${req.path}`, req.body)
   next()
 })
@@ -94,7 +94,7 @@ connectDB().then((dbStatus: string) => {
   app.use('/api', routes)
 
   // 🔹 EJS Routes Example
-  app.get('/', (req, res) => {
+  app.get('/', (req: Request, res: Response) => {
     res.render('index', { databaseStatus: dbStatus })
   })
 

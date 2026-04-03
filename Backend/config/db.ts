@@ -8,9 +8,7 @@ const connectDB = async () => {
         ? process.env.MONGO_URI_TEST
         : process.env.MONGO_URI
 
-    const conn = await mongoose.connect(mongoURI!, {
-      autoIndex: true,
-    })
+    const conn = await mongoose.connect(mongoURI!)
 
     console.log(chalk.green.bold("✅ MongoDB Connected"))
     console.log(chalk.yellow(`Host: ${conn.connection.host}`))

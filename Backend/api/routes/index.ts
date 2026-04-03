@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, Request, Response } from 'express'
 import authRoutes from "./authRoutes.js"
 import productRoutes from "./productRoutes.js"
 import cartRoutes from "./cartRoutes.js"
@@ -16,7 +16,7 @@ import adminMiddleware from '../middlewares/admin.middleware.js'
 
 const router = Router()
 
-router.get('/', (req, res) => {
+router.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Welcome to Shopping Platform API' })
 })
 
