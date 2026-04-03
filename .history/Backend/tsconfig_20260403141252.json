@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-     "types": ["node"],
     "target": "ESNext",
     "module": "NodeNext",
-    "moduleResolution": "Nodenext",
+    "moduleResolution": "NodeNext",
     "outDir": "dist",
     "rootDir": "./",
     "strict": true,
