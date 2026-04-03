@@ -61,21 +61,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <Link to={`/products/${product._id}`} className="block relative w-full h-[280px] overflow-hidden bg-gray-50 border-b border-gray-100 flex items-center justify-center p-6">
         <img
           src={imageUrl}
-          alt={product.namemax}
+          alt={product.name}
           className="h-full w-auto object-contain transition-transform duration-700 group-hover:scale-110"
         />
 
-        {/* Quick Actions (Floating) */}
-        <div className="absolute top-4 right-4 translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 flex flex-col space-y-2">
+        {/* Quick Actions (Floating) - Always visible on mobile, hover on desktop */}
+        <div className="absolute top-4 right-4 md:translate-x-12 md:opacity-0 md:group-hover:translate-x-0 md:group-hover:opacity-100 transition-all duration-300 flex flex-col space-y-2 z-20">
           <button
             onClick={handleWishlist}
-            className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${isInWishlist ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-200 hover:bg-black hover:text-white hover:border-black'}`}
+            className={`w-10 h-10 md:w-9 md:h-9 rounded-full flex items-center justify-center border transition-all shadow-lg ${isInWishlist ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-200 hover:bg-black hover:text-white hover:border-black'}`}
           >
             <Heart className={`w-4 h-4 ${isInWishlist ? 'fill-current' : ''}`} />
           </button>
           <button
             onClick={handleAddToCart}
-            className="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center border border-gray-200 hover:bg-black hover:text-white hover:border-black transition-all"
+            className="w-10 h-10 md:w-9 md:h-9 bg-white text-black rounded-full flex items-center justify-center border border-gray-200 hover:bg-black hover:text-white hover:border-black transition-all shadow-lg"
           >
             <ShoppingBag className="w-4 h-4" />
           </button>

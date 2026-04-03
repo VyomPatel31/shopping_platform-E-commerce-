@@ -11,10 +11,10 @@ const HomePage: React.FC = () => {
         <div className="min-h-screen bg-white">
             <Navbar />
 
-            <main className="pt-24 pb-24 px-6 md:px-12 max-w-[1400px] mx-auto">
+            <main className="pt-24 pb-24 px-4 md:px-12 max-w-[1400px] mx-auto overflow-x-hidden">
                 {/* HERO SECTION - Monochrome Modern */}
-                <header className="mb-24">
-                    <div className="relative w-full h-[70vh] rounded-3xl overflow-hidden bg-gray-50 flex items-center justify-center border border-gray-100 group shadow-sm">
+                <header className="mb-16 md:mb-24">
+                    <div className="relative w-full h-[50vh] md:h-[70vh] rounded-3xl overflow-hidden bg-gray-50 flex items-center justify-center border border-gray-100 group shadow-sm">
                         <motion.div
                             initial={{ opacity: 0, scale: 1.05 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -34,16 +34,16 @@ const HomePage: React.FC = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3, duration: 0.8 }}
                             >
-                                <span className="text-[10px] font-black uppercase tracking-[0.6em] text-gray-500 mb-4 block">New Season ARRIVALS</span>
-                                <h1 className="text-5xl md:text-7xl font-black mb-8 leading-[0.9] text-black tracking-tighter uppercase">
+                                <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.4em] md:tracking-[0.6em] text-gray-500 mb-4 block">New Season ARRIVALS</span>
+                                <h1 className="text-4xl md:text-7xl font-black mb-6 md:mb-8 leading-[0.9] text-black tracking-tighter uppercase">
                                     Style in <span className="border-b-4 border-black">Focus.</span>
                                 </h1>
-                                <p className="text-gray-500 text-sm md:text-md font-bold mb-10 tracking-widest leading-relaxed uppercase">
+                                <p className="text-gray-500 text-xs md:text-md font-bold mb-8 md:mb-10 tracking-widest leading-relaxed uppercase">
                                     Premium essentials for the modern lifestyle. Minimalist and refined.
                                 </p>
 
-                                <div className="flex items-center justify-center space-x-6">
-                                    <Link to="/products" className="bg-black text-white px-10 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] flex items-center space-x-3 hover:bg-gray-800 transition-all transform hover:scale-105 active:scale-95 shadow-lg">
+                                <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                                    <Link to="/products" className="w-full sm:w-auto bg-black text-white px-8 md:px-10 py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-[0.2em] flex items-center justify-center space-x-3 hover:bg-gray-800 transition-all shadow-lg">
                                         <span>Shop Entire Boutique</span>
                                         <ArrowRight className="w-4 h-4" />
                                     </Link>
@@ -58,12 +58,12 @@ const HomePage: React.FC = () => {
 
                 {/* FEATURED CATEGORIES - Modern Grid */}
                 <section className="mb-32">
-                    <div className="flex items-end justify-between mb-16 px-2">
+                    <div className="flex items-end justify-between mb-12 md:mb-16 px-2">
                         <div className="space-y-2">
-                            <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.5em]">Curated Essentials</h2>
-                            <p className="text-4xl font-black text-black uppercase tracking-tighter">Shop by Category</p>
+                            <h2 className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.5em]">Curated Essentials</h2>
+                            <p className="text-3xl md:text-4xl font-black text-black uppercase tracking-tighter leading-none">Shop by Category</p>
                         </div>
-                        <Link to="/products" className="text-[10px] font-black text-black border-b-2 border-black uppercase tracking-[0.3em] hover:text-gray-500 hover:border-gray-500 transition-all">Browse all</Link>
+                        <Link to="/products" className="text-[8px] md:text-[10px] font-black text-black border-b-2 border-black uppercase tracking-[0.3em] hover:text-gray-500 hover:border-gray-500 transition-all whitespace-nowrap ml-4">Browse all</Link>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -96,10 +96,10 @@ const HomePage: React.FC = () => {
 
                 {/* INVENTORY PREVIEW */}
                 <section>
-                    <div className="flex items-center justify-between mb-16">
+                    <div className="flex items-center justify-between mb-12 md:mb-16 px-2">
                         <div className="space-y-1">
-                            <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Our Best Sellers</h2>
-                            <p className="text-4xl font-black text-black border-l-8 border-black pl-6 uppercase tracking-tighter">Newest Releases</p>
+                            <h2 className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Our Best Sellers</h2>
+                            <p className="text-3xl md:text-4xl font-black text-black border-l-4 md:border-l-8 border-black pl-4 md:pl-6 uppercase tracking-tighter leading-none">Newest Releases</p>
                         </div>
                     </div>
 

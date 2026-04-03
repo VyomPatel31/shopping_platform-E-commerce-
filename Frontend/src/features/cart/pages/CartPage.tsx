@@ -181,10 +181,10 @@ const CartPage: React.FC = () => {
     <div className="min-h-screen bg-white text-black flex flex-col">
       <Navbar />
 
-      <main className="pt-40 pb-24 px-6 max-w-[1400px] mx-auto w-full">
-        <div className="flex flex-col md:flex-row items-baseline space-x-6 mb-16 border-b-8 border-black pb-8 overflow-hidden">
-          <h1 className="text-6xl font-black uppercase tracking-tighter shrink-0">Your Shopping Cart</h1>
-          <div className="flex-1 h-2 bg-gray-50 flex items-center px-4">
+      <main className="pt-24 md:pt-40 pb-24 px-4 md:px-6 max-w-[1400px] mx-auto w-full">
+        <div className="flex flex-col md:flex-row items-baseline space-x-0 md:space-x-6 mb-8 md:mb-16 border-b-4 md:border-b-8 border-black pb-6 md:pb-8 overflow-hidden">
+          <h1 className="text-3xl md:text-6xl font-black uppercase tracking-tighter shrink-0 mb-4 md:mb-0">Your Shopping Cart</h1>
+          <div className="hidden md:flex flex-1 h-2 bg-gray-50 items-center px-4">
             <div className="w-[30%] h-full bg-black"></div>
           </div>
           {items.length > 0 && (
@@ -202,10 +202,10 @@ const CartPage: React.FC = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-          <div className="lg:col-span-8 space-y-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16">
+          <div className="lg:col-span-8 space-y-8 md:space-y-12">
             {/* Cart Items List */}
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               <AnimatePresence>
                 {items.map((item) => (
                   <motion.div
@@ -226,11 +226,11 @@ const CartPage: React.FC = () => {
 
                     <div className="flex-1 flex flex-col justify-between py-2">
                       <div className="space-y-2">
-                        <div className="flex justify-between items-start">
-                          <h3 className="text-xl font-black text-black uppercase tracking-tighter line-clamp-2 max-w-sm">{item.product?.name}</h3>
-                          <div className="text-2xl font-black text-black tracking-tighter">₹{item.product?.price.toLocaleString()}</div>
+                        <div className="flex flex-col md:flex-row justify-between items-start gap-2">
+                          <h3 className="text-lg md:text-xl font-black text-black uppercase tracking-tighter line-clamp-2 md:max-w-sm leading-tight">{item.product?.name}</h3>
+                          <div className="text-xl md:text-2xl font-black text-black tracking-tighter self-end md:self-auto">₹{item.product?.price.toLocaleString()}</div>
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">SKU: {item.product?._id.substring(0, 8)}</span>
+                        <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-gray-400">SKU: {item.product?._id.substring(0, 8)}</span>
                       </div>
 
                       <div className="flex items-center justify-between mt-8">
@@ -264,11 +264,11 @@ const CartPage: React.FC = () => {
             </div>
 
             {/* Delivery Address Section */}
-            <div className="bg-gray-50 rounded-[3rem] p-12 border border-gray-100">
+            <div className="bg-gray-50 rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 border border-gray-100">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
-                <div className="space-y-2">
-                  <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Indian Market Checkout</h2>
-                  <p className="text-3xl font-black uppercase tracking-tighter flex items-center gap-3">Delivery Address</p>
+                <div className="space-y-1 md:space-y-2">
+                  <h2 className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Indian Market Checkout</h2>
+                  <p className="text-2xl md:text-3xl font-black uppercase tracking-tighter flex items-center gap-3 leading-none">Delivery Address</p>
                 </div>
                 <button
                   onClick={() => setShowAddressForm(!showAddressForm)}
@@ -293,10 +293,10 @@ const CartPage: React.FC = () => {
                         whileHover={{ y: -4 }}
                         key={addr._id}
                         onClick={() => setSelectedAddress(addr._id)}
-                        className={`p-8 rounded-[2rem] cursor-pointer transition-all border-2 relative overflow-hidden ${selectedAddress === addr._id ? 'border-black bg-white shadow-xl' : 'border-gray-100 bg-white/50 hover:border-black/20 opacity-60'}`}
+                        className={`p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] cursor-pointer transition-all border-2 relative overflow-hidden ${selectedAddress === addr._id ? 'border-black bg-white shadow-xl' : 'border-gray-100 bg-white/50 hover:border-black/20 opacity-60'}`}
                       >
                         {selectedAddress === addr._id && (
-                          <div className="absolute top-0 right-0 bg-black text-white px-4 py-1.5 rounded-bl-2xl text-[8px] font-black uppercase tracking-widest">Deliver to this</div>
+                          <div className="absolute top-0 right-0 bg-black text-white px-3 md:px-4 py-1 md:py-1.5 rounded-bl-xl md:rounded-bl-2xl text-[7px] md:text-[8px] font-black uppercase tracking-widest">Deliver to this</div>
                         )}
                         <div className="font-black text-sm uppercase tracking-tight mb-4">{addr.fullName}</div>
                         <p className="text-xs text-gray-500 font-bold uppercase tracking-wider leading-relaxed">
@@ -351,8 +351,8 @@ const CartPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-4 h-fit sticky top-40 space-y-8">
-            <div className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-2xl relative overflow-hidden">
+          <div className="lg:col-span-4 h-fit md:sticky md:top-40 space-y-8">
+            <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-gray-100 shadow-2xl relative overflow-hidden">
               <div className="relative z-10 space-y-10">
                 <div className="space-y-1">
                   <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Price Summary</h2>
@@ -371,9 +371,9 @@ const CartPage: React.FC = () => {
                 </div>
 
                 <div className="pt-10 border-t border-gray-50">
-                  <div className="flex justify-between items-end mb-10">
-                    <span className="text-sm font-black uppercase tracking-widest mb-1">Total Amount</span>
-                    <span className="text-5xl font-black text-black tracking-tighter">₹{subtotal.toLocaleString()}</span>
+                  <div className="flex justify-between items-end mb-8 md:mb-10">
+                    <span className="text-xs md:text-sm font-black uppercase tracking-widest mb-1">Total Amount</span>
+                    <span className="text-3xl md:text-5xl font-black text-black tracking-tighter leading-none">₹{subtotal.toLocaleString()}</span>
                   </div>
 
                   <div className="space-y-4 mb-8">

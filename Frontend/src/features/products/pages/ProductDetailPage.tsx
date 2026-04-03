@@ -124,18 +124,18 @@ const ProductDetailPage: React.FC = () => {
     <div className="min-h-screen bg-white text-black">
       <Navbar />
       
-      <main className="pt-32 pb-32 px-6 max-w-[1400px] mx-auto">
+      <main className="pt-24 md:pt-32 pb-20 md:pb-32 px-4 md:px-6 max-w-[1400px] mx-auto overflow-x-hidden">
         <motion.button
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => navigate('/products')}
-          className="flex items-center space-x-3 text-gray-400 hover:text-black mb-12 transition-all group font-black text-[10px] uppercase tracking-[0.4em]"
+          className="flex items-center space-x-2 md:space-x-3 text-gray-400 hover:text-black mb-8 md:mb-12 transition-all group font-black text-[8px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em]"
         >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft className="w-3 md:w-4 h-3 md:h-4 group-hover:-translate-x-1 transition-transform" />
           <span>Boutique Inventory</span>
         </motion.button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20">
           {/* LEFT: Image Gallery */}
           <div className="flex flex-col space-y-6">
             <motion.div
@@ -182,9 +182,9 @@ const ProductDetailPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <div className="space-y-4 mb-10">
-                <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.5em] block">{product.category || 'Lifestyle Collection'}</span>
-                <h1 className="text-5xl md:text-6xl font-black text-black leading-none uppercase tracking-tighter">{product.name}</h1>
+              <div className="space-y-3 md:space-y-4 mb-8 md:mb-10">
+                <span className="text-[9px] md:text-[11px] font-black text-gray-400 uppercase tracking-[0.4em] md:tracking-[0.5em] block">{product.category || 'Lifestyle Collection'}</span>
+                <h1 className="text-4xl md:text-6xl font-black text-black leading-none uppercase tracking-tighter">{product.name}</h1>
                 <div className="flex items-center space-x-2 pt-2">
                    <div className="flex">
                       {[...Array(5)].map((_, i) => (
@@ -196,10 +196,10 @@ const ProductDetailPage: React.FC = () => {
               </div>
 
               <div className="flex items-baseline space-x-6 mb-12">
-                 <div className="flex flex-col">
-                    <span className="text-[8px] uppercase tracking-[0.5em] text-gray-400 font-black mb-2 leading-none">Net Price / INR</span>
-                    <span className="text-5xl font-black text-black tracking-tighter">₹{product.price.toLocaleString()}</span>
-                 </div>
+                  <div className="flex flex-col">
+                    <span className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] md:tracking-[0.5em] text-gray-400 font-black mb-1 md:mb-2 leading-none">Net Price / INR</span>
+                    <span className="text-4xl md:text-5xl font-black text-black tracking-tighter">₹{product.price.toLocaleString()}</span>
+                  </div>
                  {discount > 0 && (
                     <div className="flex flex-col opacity-20 hover:opacity-100 transition-opacity">
                         <span className="text-[8px] uppercase tracking-[0.5em] text-gray-400 font-black mb-2 leading-none">MRP</span>
@@ -227,8 +227,8 @@ const ProductDetailPage: React.FC = () => {
 
               {/* Action Buttons */}
               <div className="space-y-6">
-                 <div className="flex items-center space-x-6 p-4 border border-gray-100 rounded-full px-8 w-fit shadow-sm">
-                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-400 pr-4">Quantity</span>
+                 <div className="flex items-center space-x-6 p-3 md:p-4 border border-gray-100 rounded-full px-6 md:px-8 w-fit shadow-sm">
+                    <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-gray-400 pr-2 md:pr-4 whitespace-nowrap">Quantity</span>
                     <div className="flex items-center space-x-6">
                        <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="text-black hover:text-gray-400 transition-colors text-2xl font-light">−</button>
                        <span className="text-sm font-black w-4 text-center">{quantity}</span>
@@ -236,34 +236,36 @@ const ProductDetailPage: React.FC = () => {
                     </div>
                  </div>
 
-                  <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex flex-col md:flex-row gap-4">
                     <button
                       onClick={handleAddToCart}
-                      className="flex-1 bg-black text-white h-20 rounded-full font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center space-x-4 hover:bg-gray-900 transition-all transform hover:scale-[1.02] active:scale-95 shadow-2xl shadow-black/10"
+                      className="flex-1 bg-black text-white h-16 md:h-20 rounded-full font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center space-x-4 hover:bg-gray-900 transition-all shadow-2xl shadow-black/10"
                     >
-                      <ShoppingCart className="w-5 h-5" />
+                      <ShoppingCart className="w-5 h-5 shrink-0" />
                       <span>Acquire Piece</span>
                     </button>
-                    <button
-                      onClick={async () => {
-                        if (product.stock < quantity) {
-                          toast.error('Insufficient inventory');
-                          return;
-                        }
-                        try {
-                          await addItem(product, quantity);
-                          navigate('/cart');
-                        } catch (err) {
-                          toast.error('Acquisition failure');
-                        }
-                      }}
-                      className="flex-1 bg-gray-50 border border-gray-100 text-black h-20 rounded-full font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center space-x-4 hover:bg-black hover:text-white hover:border-black transition-all transform hover:scale-[1.02] active:scale-95 shadow-md"
-                    >
-                      <span>Direct Buy</span>
-                    </button>
-                    <button className="h-20 w-20 rounded-full border border-gray-100 flex items-center justify-center hover:bg-gray-50 transition-all text-gray-400 hover:text-black shadow-sm">
-                      <Share2 className="w-5 h-5" />
-                    </button>
+                    <div className="flex space-x-4">
+                        <button
+                        onClick={async () => {
+                            if (product.stock < quantity) {
+                            toast.error('Insufficient inventory');
+                            return;
+                            }
+                            try {
+                            await addItem(product, quantity);
+                            navigate('/cart');
+                            } catch (err) {
+                            toast.error('Acquisition failure');
+                            }
+                        }}
+                        className="flex-1 bg-gray-50 border border-gray-100 text-black h-16 md:h-20 rounded-full font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center space-x-4 hover:bg-black hover:text-white hover:border-black transition-all shadow-md"
+                        >
+                        <span>Direct Buy</span>
+                        </button>
+                        <button className="h-16 w-16 md:h-20 md:w-20 rounded-full border border-gray-100 flex items-center justify-center hover:bg-gray-50 transition-all text-gray-400 hover:text-black shadow-sm flex-shrink-0">
+                        <Share2 className="w-5 h-5" />
+                        </button>
+                    </div>
                   </div>
               </div>
 
@@ -285,8 +287,8 @@ const ProductDetailPage: React.FC = () => {
         </div>
 
         {/* REVIEWS SECTION */}
-        <div className="mt-40 pt-40 border-t border-gray-50">
-           <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+        <div className="mt-24 md:mt-40 pt-20 md:pt-40 border-t border-gray-50">
+           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-20">
               <div className="lg:col-span-4">
                  <div className="sticky top-40 space-y-8">
                     <h2 className="text-5xl font-black uppercase tracking-tighter leading-none">Clientele <br/> Feedback</h2>

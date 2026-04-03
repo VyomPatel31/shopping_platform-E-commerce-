@@ -2,43 +2,76 @@ import React, { useState } from 'react';
 import Navbar from '../../../components/layout/Navbar';
 import Footer from '../../../components/layout/Footer';
 import ProductList from '../components/ProductList';
-import { Star, SlidersHorizontal, X } from 'lucide-react';
+import { Star, SlidersHorizontal, X, ArrowRight, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const categories = ['Electronics', 'Accessories', 'Fashion', 'Home Decor', 'Gaming', 'Lifestyle'];
 
 const ProductsPage: React.FC = () => {
     const [selectedCategory, setSelectedCategory] = useState<string>('');
-    const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
     const [minRating, setMinRating] = useState<number>(0);
     const [sortBy, setSortBy] = useState<string>('latest');
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-    // This component will pass these filters to ProductList or handle fetching itself.
-    // Let's modify ProductList to accept these as props.
-
     return (
-        <div className="min-h-screen bg-[#f3f3f3]">
+        <div className="min-h-screen bg-white">
             <Navbar />
             
-            <main className="pt-24 pb-20 px-4 md:px-8 max-w-[1700px] mx-auto">
-                <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Sidebar Filters */}
-                    <aside className="hidden lg:block w-72 space-y-8 bg-white p-6 rounded-sm shadow-sm border border-gray-100 h-fit sticky top-28">
-                        <div>
-                            <h3 className="text-sm font-bold uppercase tracking-widest text-gray-900 border-b border-gray-100 pb-2 mb-4">Category</h3>
-                            <div className="space-y-2">
+            <main className="pt-32 pb-20 px-4 md:px-12 max-w-[1400px] mx-auto">
+                {/* Header Section */}
+                <div className="mb-12 space-y-4">
+                    <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-black leading-none">
+                        The <span className="text-gray-300">Catalog.</span>
+                    </h1>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b-4 border-black pb-8">
+                        <p className="text-gray-400 text-[10px] md:text-xs font-black uppercase tracking-[0.4em]">
+                            Discovered {selectedCategory || 'All'} essentials curated for precision.
+                        </p>
+                        
+                        <div className="flex items-center space-x-4">
+                            <div className="relative">
+                                <select 
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                    className="appearance-none bg-gray-50 border border-gray-100 rounded-full px-8 py-3 pr-12 text-[10px] font-black uppercase tracking-widest text-black focus:outline-none focus:ring-2 focus:ring-black transition-all cursor-pointer"
+                                >
+                                    <option value="latest">Newest Arrivals</option>
+                                    <option value="price_asc">Price: Low to High</option>
+                                    <option value="price_desc">Price: High to Low</option>
+                                    <option value="rating">Top Rated Only</option>
+                                </select>
+                                <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-3 h-3 text-black pointer-events-none" />
+                            </div>
+                            
+                            <button 
+                                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                                className="lg:hidden flex items-center space-x-3 bg-black text-white px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl"
+                            >
+                                <SlidersHorizontal className="w-4 h-4" />
+                                <span>Filters</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-12">
+                    {/* Sidebar Filters - Desktop */}
+                    <aside className="hidden lg:block w-72 space-y-12 h-fit sticky top-32">
+                        <div className="space-y-6">
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 border-b border-gray-100 pb-3">Department</h3>
+                            <div className="flex flex-col space-y-3">
                                 <button 
                                     onClick={() => setSelectedCategory('')}
-                                    className={`block text-xs font-medium hover:text-[#e47911] transition-colors ${selectedCategory === '' ? 'text-[#e47911] font-bold underline' : 'text-gray-600'}`}
+                                    className={`text-left text-xs font-black uppercase tracking-widest transition-all ${selectedCategory === '' ? 'text-black translate-x-2' : 'text-gray-300 hover:text-black hover:translate-x-1'}`}
                                 >
-                                    All Categories
+                                    All Archives
                                 </button>
                                 {categories.map(cat => (
                                     <button 
                                         key={cat}
                                         onClick={() => setSelectedCategory(cat)}
-                                        className={`block text-xs font-medium hover:text-[#e47911] transition-colors ${selectedCategory === cat ? 'text-[#e47911] font-bold underline' : 'text-gray-600'}`}
+                                        className={`text-left text-xs font-black uppercase tracking-widest transition-all ${selectedCategory === cat ? 'text-black translate-x-2' : 'text-gray-300 hover:text-black hover:translate-x-1'}`}
                                     >
                                         {cat}
                                     </button>
@@ -46,18 +79,18 @@ const ProductsPage: React.FC = () => {
                             </div>
                         </div>
 
-                        <div>
-                            <h3 className="text-sm font-bold uppercase tracking-widest text-gray-900 border-b border-gray-100 pb-2 mb-4">Customer Rating</h3>
-                            <div className="space-y-3">
-                                {[4, 3, 2, 1].map((rating) => (
+                        <div className="space-y-6">
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 border-b border-gray-100 pb-3">Performance</h3>
+                            <div className="space-y-4">
+                                {[4, 3, 2].map((rating) => (
                                     <button 
                                         key={rating}
                                         onClick={() => setMinRating(rating)}
-                                        className={`flex items-center space-x-2 text-xs font-medium hover:text-[#e47911] transition-colors ${minRating === rating ? 'text-[#e47911] font-bold' : 'text-gray-600'}`}
+                                        className={`flex items-center space-x-3 text-[10px] font-black uppercase tracking-widest transition-all ${minRating === rating ? 'text-black' : 'text-gray-300 hover:text-black'}`}
                                     >
-                                        <div className="flex text-[#febd69]">
+                                        <div className="flex space-x-0.5">
                                             {[...Array(5)].map((_, i) => (
-                                                <Star key={i} className={`w-4 h-4 ${i < rating ? 'fill-current' : 'text-gray-300'}`} />
+                                                <Star key={i} className={`w-3 h-3 ${i < rating ? 'fill-current text-black' : 'text-gray-100'}`} />
                                             ))}
                                         </div>
                                         <span>& Up</span>
@@ -65,100 +98,114 @@ const ProductsPage: React.FC = () => {
                                 ))}
                                 <button 
                                     onClick={() => setMinRating(0)}
-                                    className="text-[10px] text-blue-600 hover:underline"
+                                    className={`text-[8px] font-black uppercase tracking-[0.2em] transition-all ${minRating === 0 ? 'text-black' : 'text-gray-300'}`}
                                 >
-                                    Clear Rating
+                                    Reset Quality Filter
                                 </button>
                             </div>
                         </div>
 
-                        <div>
-                            <h3 className="text-sm font-bold uppercase tracking-widest text-gray-900 border-b border-gray-100 pb-2 mb-4">Price</h3>
-                            <div className="flex items-center space-x-4">
-                                <input 
-                                    type="number" 
-                                    placeholder="Min" 
-                                    className="w-full border border-gray-300 rounded p-1.5 text-xs outline-none focus:border-[#febd69]"
-                                    onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
-                                />
-                                <span className="text-gray-400">-</span>
-                                <input 
-                                    type="number" 
-                                    placeholder="Max" 
-                                    className="w-full border border-gray-300 rounded p-1.5 text-xs outline-none focus:border-[#febd69]"
-                                    onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
-                                />
+                        <div className="space-y-6">
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 border-b border-gray-100 pb-3">Nominal Value (INR)</h3>
+                            <div className="flex items-center gap-3">
+                                <div className="relative flex-1">
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-300">₹</span>
+                                    <input 
+                                        type="number" 
+                                        placeholder="Min" 
+                                        className="w-full bg-gray-50 border-none rounded-xl py-3 pl-7 pr-3 text-[10px] font-black outline-none focus:ring-1 focus:ring-black transition-all"
+                                        onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
+                                    />
+                                </div>
+                                <div className="h-[1px] w-3 bg-gray-200"></div>
+                                <div className="relative flex-1">
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-300">₹</span>
+                                    <input 
+                                        type="number" 
+                                        placeholder="Max" 
+                                        className="w-full bg-gray-50 border-none rounded-xl py-3 pl-7 pr-3 text-[10px] font-black outline-none focus:ring-1 focus:ring-black transition-all"
+                                        onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </aside>
 
                     {/* Main Content */}
                     <div className="flex-1">
-                        <div className="bg-white p-4 rounded-sm shadow-sm border border-gray-100 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                            <div className="text-sm text-gray-700">
-                                Showing results for <span className="font-bold text-gray-900">"{selectedCategory || 'All Products'}"</span>
-                            </div>
-
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center space-x-2">
-                                    <label className="text-xs font-bold text-gray-500 uppercase">Sort by:</label>
-                                    <select 
-                                        value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value)}
-                                        className="bg-gray-50 border border-gray-300 rounded px-2 py-1 text-xs outline-none focus:border-[#febd69] cursor-pointer"
-                                    >
-                                        <option value="latest">Newest Arrivals</option>
-                                        <option value="price_asc">Price: Low to High</option>
-                                        <option value="price_desc">Price: High to Low</option>
-                                        <option value="rating">Avg. Customer Review</option>
-                                    </select>
-                                </div>
-                                <button 
-                                    onClick={() => setIsFilterOpen(!isFilterOpen)}
-                                    className="lg:hidden flex items-center gap-2 bg-black text-white px-4 py-1.5 rounded text-xs"
-                                >
-                                    <SlidersHorizontal className="w-4 h-4" /> Filters
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Mobile Filters */}
+                        {/* Mobile Filters Modal */}
                         <AnimatePresence>
                             {isFilterOpen && (
                                 <motion.div 
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    className="lg:hidden bg-white mb-6 overflow-hidden rounded shadow-md border border-gray-200"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="lg:hidden fixed inset-0 z-[100] bg-white flex flex-col"
                                 >
-                                    <div className="p-6 space-y-8">
-                                        <div className="flex items-center justify-between">
-                                            <h2 className="text-xl font-bold">Filters</h2>
-                                            <X className="w-6 h-6 cursor-pointer" onClick={() => setIsFilterOpen(false)} />
-                                        </div>
-                                        {/* Mobile categories/price/rating UI here... same as above but bigger for touch */}
-                                        <div className="grid grid-cols-2 gap-8">
-                                            <div>
-                                                <h3 className="font-bold mb-3">Category</h3>
-                                                <select className="w-full border p-2" value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}>
-                                                    <option value="">All</option>
-                                                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                                                </select>
+                                    <div className="flex items-center justify-between p-6 border-b border-gray-100">
+                                        <h2 className="text-2xl font-black uppercase tracking-tighter">Fine-Tune Search</h2>
+                                        <button onClick={() => setIsFilterOpen(false)} className="p-2 border border-gray-100 rounded-full">
+                                            <X className="w-6 h-6" />
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="flex-1 overflow-y-auto p-8 space-y-12">
+                                        <div className="space-y-6">
+                                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Department</h3>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                {['', ...categories].map(cat => (
+                                                    <button 
+                                                        key={cat}
+                                                        onClick={() => {
+                                                            setSelectedCategory(cat);
+                                                            setIsFilterOpen(false);
+                                                        }}
+                                                        className={`py-4 rounded-2xl border-2 text-[10px] font-black uppercase tracking-widest transition-all ${selectedCategory === cat ? 'bg-black text-white border-black' : 'bg-gray-50 border-gray-50 text-gray-400'}`}
+                                                    >
+                                                        {cat || 'All Records'}
+                                                    </button>
+                                                ))}
                                             </div>
-                                            <div>
-                                                <h3 className="font-bold mb-3">Rating</h3>
-                                                <select className="w-full border p-2" value={minRating} onChange={e => setMinRating(Number(e.target.value))}>
-                                                    <option value="0">All</option>
-                                                    {[4,3,2,1].map(r => <option key={r} value={r}>{r} & Up</option>)}
-                                                </select>
+                                        </div>
+
+                                        <div className="space-y-6">
+                                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Customer Rating</h3>
+                                            <div className="flex flex-col space-y-3">
+                                                {[4, 3, 2, 0].map((rating) => (
+                                                    <button 
+                                                        key={rating}
+                                                        onClick={() => {
+                                                            setMinRating(rating);
+                                                            setIsFilterOpen(false);
+                                                        }}
+                                                        className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all ${minRating === rating ? 'border-black bg-black text-white' : 'border-gray-100'}`}
+                                                    >
+                                                        <div className="flex space-x-1">
+                                                            {[...Array(5)].map((_, i) => (
+                                                                <Star key={i} className={`w-4 h-4 ${rating === 0 ? 'text-gray-100' : (i < rating ? 'fill-current' : 'opacity-20')}`} />
+                                                            ))}
+                                                        </div>
+                                                        <span className="text-[10px] font-black uppercase tracking-widest">{rating === 0 ? 'Show All' : `& Up`}</span>
+                                                    </button>
+                                                ))}
                                             </div>
                                         </div>
+                                    </div>
+                                    
+                                    <div className="p-8 border-t border-gray-100">
+                                        <button 
+                                            onClick={() => setIsFilterOpen(false)}
+                                            className="w-full bg-black text-white py-5 rounded-full font-black text-xs uppercase tracking-[0.3em] flex items-center justify-center space-x-3 shadow-2xl"
+                                        >
+                                            <span>Apply Parameters</span>
+                                            <ArrowRight className="w-4 h-4" />
+                                        </button>
                                     </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
 
-                        <div className="bg-white p-6 shadow-sm border border-gray-100">
+                        <div className="min-h-[500px]">
                              <ProductList 
                                 category={selectedCategory} 
                                 minPrice={priceRange[0]} 

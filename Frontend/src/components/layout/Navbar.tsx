@@ -17,6 +17,7 @@ const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -50,7 +51,7 @@ const Navbar: React.FC = () => {
       <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-between">
         {/* LOGO */}
         <Link to="/" className="flex items-center space-x-2 z-50">
-          <span className="text-2xl font-black tracking-tighter text-black uppercase">
+          <span className="text-xl md:text-2xl font-black tracking-tighter text-black uppercase">
             SHOP<span className="text-gray-400">HUB</span>
           </span>
         </Link>
@@ -73,7 +74,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* ACTIONS */}
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-2 md:space-x-6">
           <Link to="/products" className="hidden lg:block text-xs font-bold uppercase tracking-wider text-black hover:text-gray-500 transition-colors">
             Shop
           </Link>
@@ -83,7 +84,14 @@ const Navbar: React.FC = () => {
             </Link>
           )}
 
-          <div className="flex items-center space-x-5">
+          <div className="flex items-center space-x-2 md:space-x-5">
+            <button 
+              onClick={() => setShowMobileSearch(!showMobileSearch)}
+              className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <Search className="w-5 h-5 text-black" />
+            </button>
+
             <Link to="/wishlist" className="relative group p-2 hover:bg-gray-100 rounded-full transition-colors">
                <Heart className="w-5 h-5 text-black" />
                {wishlistItemsCount > 0 && (
@@ -131,7 +139,10 @@ const Navbar: React.FC = () => {
 
             {/* Mobile Menu Icon */}
             <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => {
+                setMobileMenuOpen(!mobileMenuOpen);
+                setShowMobileSearch(false);
+              }}
               className="md:hidden text-black p-2 z-50"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -139,6 +150,33 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* MOBILE SEARCH BAR */}
+      <AnimatePresence>
+        {showMobileSearch && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="md:hidden bg-white border-b border-gray-100 px-6 py-4"
+          >
+            <div className="relative w-full">
+              <input
+                type="text"
+                autoFocus
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  if (window.location.pathname !== '/products') navigate('/products');
+                }}
+                placeholder="Search products..."
+                className="w-full bg-gray-50 border border-gray-200 rounded-full py-3 px-6 pl-12 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all"
+              />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Logout Confirmation Modal */}
       <AnimatePresence>
