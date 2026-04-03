@@ -43,7 +43,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup, onVe
     setIsLoading(true);
     try {
       const response = await authService.login(data);
-      if (response.success) {
+      if (response.success && response.data) {
         toast.success(`Welcome back, ${response.data.name}!`);
         setUser(response.data);
         if (response.data.accessToken) {

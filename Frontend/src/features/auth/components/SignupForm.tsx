@@ -38,7 +38,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToLogin }) =
     setIsLoading(true);
     try {
       const response = await authService.signup(data);
-      if (response.data?.devOtp) {
+      if (response.data && response.data.devOtp) {
         console.log('--- DEVELOPMENT OTP ---');
         console.log(`The verification code is: ${response.data.devOtp}`);
         console.log('-----------------------');

@@ -37,7 +37,8 @@ export interface User {
 export interface AuthResponse {
   success: boolean;
   message: string;
-  data: User & {
+  debug?: string;
+  data?: User & {
     accessToken?: string;
     refreshToken?: string;
     devOtp?: string;
