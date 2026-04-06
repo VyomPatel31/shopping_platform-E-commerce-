@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
         {/* LOGO */}
         <Link to="/" className="flex items-center space-x-2 z-50">
           <span className="text-xl md:text-2xl font-black tracking-tighter text-black uppercase">
-            SHOP<span className="text-gray-400">HUB</span>
+            SHOP<span className="text-gray-400">HUBing</span>
           </span>
         </Link>
 

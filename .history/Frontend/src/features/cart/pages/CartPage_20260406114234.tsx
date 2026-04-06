@@ -142,10 +142,6 @@ const CartPage: React.FC = () => {
           }
         };
 
-        if (!(window as any).Razorpay) {
-          throw new Error('Razorpay checkout script is not loaded. Please ensure https://checkout.razorpay.com/v1/checkout.js is included in index.html');
-        }
-
         const rzp1 = new (window as any).Razorpay(options);
         rzp1.open();
       } else {

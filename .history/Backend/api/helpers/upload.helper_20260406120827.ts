@@ -2,8 +2,6 @@ import multer from 'multer'
 
 const storage = multer.memoryStorage()
 
-import path from 'path'
-
 const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
   const allowedTypes = /jpeg|jpg|png|webp|gif/
   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase())

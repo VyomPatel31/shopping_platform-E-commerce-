@@ -85,25 +85,6 @@ const Navbar: React.FC = () => {
           <div className="flex items-center space-x-2 md:space-x-5">
             <div className="h-6 w-[1px] bg-gray-200 hidden md:block"></div>
 
-            <div className="hidden md:flex items-center space-x-4">
-              <Link to="/wishlist" className="relative text-gray-500 hover:text-black transition-colors">
-                <Heart className="w-5 h-5" />
-                {wishlistCount > 0 && (
-                  <span className="absolute -right-2 -top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-black text-white">
-                    {wishlistCount}
-                  </span>
-                )}
-              </Link>
-              <Link to="/cart" className="relative text-gray-500 hover:text-black transition-colors">
-                <ShoppingCart className="w-5 h-5" />
-                {cartQuantity > 0 && (
-                  <span className="absolute -right-2 -top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-black text-white">
-                    {cartQuantity}
-                  </span>
-                )}
-              </Link>
-            </div>
-
             {isAuthenticated ? (
               <div className="hidden md:flex items-center space-x-4">
                 <Link to="/profile" className="flex items-center space-x-2 group">

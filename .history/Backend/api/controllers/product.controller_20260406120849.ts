@@ -12,6 +12,7 @@ const uploadBufferToCloudinary = (buffer: Buffer) => {
       {
         folder: 'shopping_platform/products',
         resource_type: 'image',
+        format: 'auto',
       },
       (error, result) => {
         if (error) return reject(error)

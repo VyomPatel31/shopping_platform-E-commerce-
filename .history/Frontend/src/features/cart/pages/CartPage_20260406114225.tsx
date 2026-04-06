@@ -103,15 +103,11 @@ const CartPage: React.FC = () => {
     setIsCheckingOut(true);
     try {
       if (paymentMethod === 'online') {
-        if (!razorpayKey) {
-          throw new Error('Payment gateway key is missing. Please configure VITE_RAZORPAY_KEY in Frontend/.env');
-        }
-
         const paymentRes = await axiosInstance.post('/payment/create-order', { amount: subtotal });
         const { id: order_id } = paymentRes.data.data;
 
         const options = {
-          key: razorpayKey,
+          key: 'rzp_test_arbitrary', // Replace with your real key or fetch from backend
           amount: Math.round(subtotal * 100),
           currency: 'INR',
           name: 'SHOPHUB',
@@ -141,10 +137,6 @@ const CartPage: React.FC = () => {
             color: '#000000'
           }
         };
-
-        if (!(window as any).Razorpay) {
-          throw new Error('Razorpay checkout script is not loaded. Please ensure https://checkout.razorpay.com/v1/checkout.js is included in index.html');
-        }
 
         const rzp1 = new (window as any).Razorpay(options);
         rzp1.open();
