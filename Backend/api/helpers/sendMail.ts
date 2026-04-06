@@ -17,7 +17,9 @@ if (process.env.BREVO_API_KEY) {
 }
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: process.env.MAIL_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.MAIL_PORT || '465'),
+  secure: process.env.MAIL_PORT === '465', // true for 465, false for other ports
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
@@ -36,7 +38,12 @@ console.log('---------------------------')
 // Verify SMTP connection
 transporter.verify((error, success) => {
   if (error) {
-    console.error('❌ SMTP Connection Error:', error);
+    console.error('❌ SMTP Connection Error:', {
+      message: error.message,
+      code: (error as any).code,
+      command: (error as any).command,
+      stack: error.stack
+    });
   } else {
     console.log('✅ SMTP Server is ready to take our messages');
   }
