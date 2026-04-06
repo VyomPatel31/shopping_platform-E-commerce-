@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer'
-import SibApiV3Sdk from 'sib-api-v3-sdk'
+import fetch from 'node-fetch'
 import ejs from 'ejs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -7,20 +7,10 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Configure Brevo (Sendinblue)
-let brevoApiInstance: any = null
-if (process.env.BREVO_API_KEY) {
-  try {
-    const apiSdk: any = (SibApiV3Sdk as any).default || SibApiV3Sdk
-    const defaultClient = apiSdk.ApiClient.instance
-    const apiKey = defaultClient.authentications['api-key']
-    apiKey.apiKey = process.env.BREVO_API_KEY
-    brevoApiInstance = new apiSdk.TransactionalEmailsApi()
-    console.log('✅ Brevo SDK initialized.')
-  } catch (error) {
-    console.error('❌ Failed to initialize Brevo SDK:', error)
-  }
-}
+// Configure Brevo (Sendinblue) API details
+const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
+
 
 const transporter = nodemailer.createTransport({
   host: process.env.MAIL_HOST || 'smtp.gmail.com',
@@ -61,26 +51,39 @@ const sendMail = async (email: string, template: string, data: any, subject?: st
   const html = await ejs.renderFile(templatePath, data) as string
 
   // Try Brevo first if API key is available
-  if (brevoApiInstance && process.env.BREVO_API_KEY) {
+  if (BREVO_API_KEY) {
     try {
-      console.log(`📨 Attempting to send ${subject || 'Notification'} email via Brevo to: ${email}`)
+      console.log(`📨 Attempting to send ${subject || 'Notification'} email via Brevo API (HTTPS) to: ${email}`)
 
-      const sendSmtpEmail = {
-        subject: subject || 'Notification',
-        htmlContent: html,
-        sender: {
-          name: 'Shopping Platform',
-          email: process.env.MAIL_FROM || process.env.MAIL_USER || 'noreply@yourdomain.com'
+      const response = await fetch(BREVO_API_URL, {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'api-key': BREVO_API_KEY,
+          'content-type': 'application/json'
         },
-        to: [{ email: email }]
+        body: JSON.stringify({
+          sender: {
+            name: 'Shopping Platform',
+            email: process.env.MAIL_FROM || process.env.MAIL_USER || 'noreply@yourdomain.com'
+          },
+          to: [{ email: email, name: email }],
+          subject: subject || 'Notification',
+          htmlContent: html
+        })
+      });
+
+      if (!response.ok) {
+         const errorData = await response.json();
+         throw new Error(`Brevo API Error (${response.status}): ${JSON.stringify(errorData)}`);
       }
 
-      const result = await brevoApiInstance.sendTransacEmail(sendSmtpEmail)
-      console.log('📧 Email sent successfully via Brevo:', result.response.statusCode)
-      return result
-    } catch (brevoError) {
-      console.error('🚨 Brevo Error:', brevoError)
-      console.log('⚠️ Falling back to Gmail SMTP...')
+      const result = await response.json();
+      console.log('📧 Email sent successfully via Brevo API:', result);
+      return result;
+    } catch (brevoError: any) {
+      console.error('🚨 Brevo Error:', brevoError.message)
+      console.log('⚠️ Falling back to alternative SMTP...')
     }
   }
 
