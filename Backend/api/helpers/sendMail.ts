@@ -57,7 +57,7 @@ transporter.verify((error, success) => {
 });
 
 const sendMail = async (email: string, template: string, data: any, subject?: string) => {
-  const templatePath = path.join(__dirname, '../../views', template)
+  const templatePath = path.join(process.cwd(), 'views', template)
   const html = await ejs.renderFile(templatePath, data) as string
 
   // Try Brevo first if API key is available
