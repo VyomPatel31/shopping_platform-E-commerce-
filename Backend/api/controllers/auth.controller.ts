@@ -334,7 +334,11 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
       console.log('Reset PIN email sent successfully for:', email)
     } catch (mailError) {
       console.error('Error sending reset PIN email:', mailError)
+      // In production, don't fail the request if email fails - just log it
+      // The user can still get the OTP from logs or we can implement SMS fallback later
       if (process.env.NODE_ENV === 'production') {
+        console.warn('⚠️ Email failed in production, but continuing with request')
+      } else {
         throw mailError
       }
     }
@@ -343,7 +347,7 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
       buildResponse(httpStatus.OK, {
         message: 'RESET_PIN_SENT',
         email: data.email,
-        devOtp: otp
+        ...(process.env.NODE_ENV !== 'production' && { devOtp: otp })
       })
     )
   } catch (err: any) {
