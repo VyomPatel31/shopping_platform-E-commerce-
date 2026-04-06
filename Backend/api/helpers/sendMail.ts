@@ -10,23 +10,30 @@ const __dirname = path.dirname(__filename)
 // Configure Brevo (Sendinblue)
 let brevoApiInstance: any = null
 if (process.env.BREVO_API_KEY) {
-  const defaultClient = SibApiV3Sdk.ApiClient.instance
-  const apiKey = defaultClient.authentications['api-key']
-  apiKey.apiKey = process.env.BREVO_API_KEY
-  brevoApiInstance = new SibApiV3Sdk.TransactionalEmailsApi()
+  try {
+    const apiSdk: any = (SibApiV3Sdk as any).default || SibApiV3Sdk
+    const defaultClient = apiSdk.ApiClient.instance
+    const apiKey = defaultClient.authentications['api-key']
+    apiKey.apiKey = process.env.BREVO_API_KEY
+    brevoApiInstance = new apiSdk.TransactionalEmailsApi()
+    console.log('✅ Brevo SDK initialized.')
+  } catch (error) {
+    console.error('❌ Failed to initialize Brevo SDK:', error)
+  }
 }
 
 const transporter = nodemailer.createTransport({
   host: process.env.MAIL_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.MAIL_PORT || '465'),
-  secure: process.env.MAIL_PORT === '465', // true for 465, false for other ports
+  port: parseInt(process.env.MAIL_PORT || '587'),
+  secure: process.env.MAIL_PORT === '465', // True for 465, false for 587
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
   },
   tls: {
     rejectUnauthorized: false
-  }
+  },
+  connectionTimeout: 10000 // 10 seconds
 })
 
 console.log('--- MAIL CONFIGURATION ---')
