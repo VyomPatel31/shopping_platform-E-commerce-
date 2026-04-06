@@ -5,10 +5,11 @@ import { reviewService } from '../services/review.service';
 
 interface ReviewFormProps {
   productId: string;
+  orderId: string;
   onSuccess: () => void;
 }
 
-const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onSuccess }) => {
+const ReviewForm: React.FC<ReviewFormProps> = ({ productId, orderId, onSuccess }) => {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,7 +19,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ productId, onSuccess }) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await reviewService.createReview({ product: productId, rating, comment });
+      await reviewService.createReview({ product: productId, order: orderId, rating, comment });
       toast.success('Review submitted successfully!');
       setComment('');
       setRating(5);

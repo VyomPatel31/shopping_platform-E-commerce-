@@ -6,7 +6,7 @@ export const reviewService = {
     return response.data;
   },
   
-  createReview: async (reviewData: { product: string; rating: number; comment?: string }) => {
+  createReview: async (reviewData: { product: string; order: string; rating: number; comment?: string }) => {
     const response = await axiosInstance.post('/reviews', reviewData);
     return response.data;
   },

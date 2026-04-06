@@ -200,7 +200,11 @@ export const checkReviewEligibility = async (req: Request, res: Response) => {
     });
 
     res.status(200).json(
-      buildResponse(200, { canReview: !existingReview, message: existingReview ? 'Review already submitted.' : '' })
+      buildResponse(200, { 
+        canReview: !existingReview, 
+        orderId: order?._id,
+        message: existingReview ? 'Review already submitted.' : '' 
+      })
     )
   } catch (err: any) {
     handleError(res, err)

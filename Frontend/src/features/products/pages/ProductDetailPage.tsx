@@ -25,6 +25,7 @@ const ProductDetailPage: React.FC = () => {
   const [selectedImage, setSelectedImage] = React.useState(0);
   const [reviews, setReviews] = React.useState<any[]>([]);
   const [canReview, setCanReview] = React.useState(false);
+  const [eligibleOrderId, setEligibleOrderId] = React.useState<string | null>(null);
   const [isReviewsLoading, setIsReviewsLoading] = React.useState(true);
 
   const { data: productData, isLoading, error } = useQuery({
@@ -50,6 +51,7 @@ const ProductDetailPage: React.FC = () => {
     try {
       const res = await reviewService.checkEligibility(productId);
       setCanReview(res.data.canReview);
+      setEligibleOrderId(res.data.orderId);
     } catch (err) {
       console.error('Failed to check review eligibility');
     }
@@ -296,9 +298,13 @@ const ProductDetailPage: React.FC = () => {
                        Authentic narratives from our global community regarding product integrity and utility.
                     </p>
                     
-                    {canReview && (
+                    {canReview && eligibleOrderId && (
                        <div className="pt-8">
-                          <ReviewForm productId={productId!} onSuccess={() => { fetchReviews(); setCanReview(false); }} />
+                          <ReviewForm 
+                            productId={productId!} 
+                            orderId={eligibleOrderId}
+                            onSuccess={() => { fetchReviews(); setCanReview(false); }} 
+                          />
                        </div>
                     )}
                  </div>
