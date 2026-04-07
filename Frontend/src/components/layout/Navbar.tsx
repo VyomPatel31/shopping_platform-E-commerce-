@@ -15,6 +15,7 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { query, setQuery } = useSearchStore();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const cartQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -40,6 +41,7 @@ const Navbar: React.FC = () => {
     useWishlistStore.getState().clearWishlist();
     navigate('/');
     setShowLogoutConfirm(false);
+    setMobileMenuOpen(false);
   };
 
   return (
@@ -126,7 +128,13 @@ const Navbar: React.FC = () => {
                 </Link>
             )}
 
-            {/* Removed Mobile Menu Icon */}
+            {/* Mobile Menu Icon - Solid Style */}
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden ml-2 bg-gray-50 text-black border border-gray-100 p-2.5 rounded-2xl z-[101] transition-colors relative"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
       </div>
@@ -176,6 +184,53 @@ const Navbar: React.FC = () => {
         )}
       </AnimatePresence>
 
+      {/* MOBILE MENU MODAL */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="md:hidden fixed top-[80px] right-4 w-64 bg-white z-[90] flex flex-col p-6 rounded-[2rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100"
+          >
+            <div className="flex flex-col space-y-6">
+              <Link onClick={() => setMobileMenuOpen(false)} to="/" className="text-xl font-black uppercase tracking-tighter">Home</Link>
+              <Link onClick={() => setMobileMenuOpen(false)} to="/products" className="text-xl font-black uppercase tracking-tighter">Shop</Link>
+              <Link onClick={() => setMobileMenuOpen(false)} to="/wishlist" className="text-xl font-black uppercase tracking-tighter flex justify-between">
+                 <span>Wishlist</span>
+                 {wishlistCount > 0 && <span className="bg-black text-white text-[10px] px-2 py-1 rounded-full">{wishlistCount}</span>}
+              </Link>
+              <Link onClick={() => setMobileMenuOpen(false)} to="/cart" className="text-xl font-black uppercase tracking-tighter flex justify-between">
+                 <span>Cart</span>
+                 {cartQuantity > 0 && <span className="bg-black text-white text-[10px] px-2 py-1 rounded-full">{cartQuantity}</span>}
+              </Link>
+              <div className="pt-6 border-t border-gray-100 flex flex-col space-y-4">
+              {isAuthenticated ? (
+                  <>
+                  <Link onClick={() => setMobileMenuOpen(false)} to="/profile" className="text-sm font-bold uppercase tracking-widest text-gray-500">My Profile</Link>
+                  <Link onClick={() => setMobileMenuOpen(false)} to="/orders" className="text-sm font-bold uppercase tracking-widest text-gray-500">Order History</Link>
+                  {user?.role === 'admin' && (
+                    <Link onClick={() => setMobileMenuOpen(false)} to="/admin" className="text-sm font-bold uppercase tracking-widest text-blue-500">Admin Dashboard</Link>
+                  )}
+                  <button 
+                    onClick={() => {
+                        setMobileMenuOpen(false);
+                        handleLogout();
+                    }}
+                    className="text-sm font-bold uppercase tracking-widest text-red-500 text-left pt-4"
+                  >
+                    Logout
+                  </button>
+                  </>
+                ) : (
+                  <Link onClick={() => setMobileMenuOpen(false)} to="/login" className="text-sm font-bold uppercase tracking-widest text-black">Sign In / Register</Link>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
     
     {/* MOBILE BOTTOM NAVIGATION */}

@@ -110,37 +110,41 @@ const CartPage: React.FC = () => {
         const paymentRes = await axiosInstance.post('/payment/create-order', { amount: subtotal });
         const { id: order_id } = paymentRes.data.data;
 
-        const options = {
-          key: razorpayKey,
-          amount: Math.round(subtotal * 100),
-          currency: 'INR',
-          name: 'SHOPHUB',
-          description: 'Secure Payment',
-          order_id: order_id,
-          handler: async function (response: any) {
-            try {
-              const res = await axiosInstance.post('/orders', {
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpayOrderId: response.razorpay_order_id,
-                razorpaySignature: response.razorpay_signature,
-                addressId: selectedAddress,
-                paymentMethod: 'online'
-              });
-              await fetchCart();
-              toast.success('Order Placed Successfully!');
-              navigate('/order-success/' + res.data.data._id);
-            } catch (err: any) {
-              toast.error('Order Finalization Failed');
+          const addressInfo = addresses.find(a => a._id === selectedAddress);
+          const contact = addressInfo?.phone || '0000000000';
+
+          const options = {
+            key: razorpayKey,
+            amount: Math.round(subtotal * 100),
+            currency: 'INR',
+            name: 'SHOPHUB',
+            description: 'Secure Payment',
+            order_id: order_id,
+            handler: async function (response: any) {
+              try {
+                const res = await axiosInstance.post('/orders', {
+                  razorpayPaymentId: response.razorpay_payment_id,
+                  razorpayOrderId: response.razorpay_order_id,
+                  razorpaySignature: response.razorpay_signature,
+                  addressId: selectedAddress,
+                  paymentMethod: 'online'
+                });
+                await fetchCart();
+                toast.success('Order Placed Successfully!');
+                navigate('/order-success/' + res.data.data._id);
+              } catch (err: any) {
+                toast.error('Order Finalization Failed');
+              }
+            },
+            prefill: {
+              name: user?.name || '',
+              email: user?.email || '',
+              contact: contact
+            },
+            theme: {
+              color: '#000000'
             }
-          },
-          prefill: {
-            name: user?.name || '',
-            email: user?.email || '',
-          },
-          theme: {
-            color: '#000000'
-          }
-        };
+          };
 
         if (!(window as any).Razorpay) {
           throw new Error('Razorpay checkout script is not loaded. Please ensure https://checkout.razorpay.com/v1/checkout.js is included in index.html');

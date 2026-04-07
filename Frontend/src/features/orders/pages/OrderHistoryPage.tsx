@@ -76,10 +76,10 @@ const OrderHistoryPage: React.FC = () => {
         <div className="min-h-screen bg-white text-black flex flex-col">
             <Navbar />
 
-            <main className="pt-40 pb-24 px-6 max-w-[1400px] mx-auto w-full">
-                <div className="flex items-center space-x-6 mb-16 border-b-8 border-black pb-8 overflow-hidden">
-                    <h1 className="text-6xl font-black uppercase tracking-tighter shrink-0">Order History</h1>
-                    <div className="flex-1 h-2 bg-gray-50 flex items-center px-4">
+            <main className="pt-32 md:pt-40 pb-32 md:pb-24 px-4 md:px-6 max-w-[1400px] mx-auto w-full">
+                <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-6 mb-12 md:mb-16 border-b-8 border-black pb-8 overflow-hidden">
+                    <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter shrink-0">Order History</h1>
+                    <div className="hidden md:flex flex-1 h-2 bg-gray-50 items-center px-4">
                         <div className="w-[15%] h-full bg-black"></div>
                     </div>
                 </div>
@@ -105,7 +105,7 @@ const OrderHistoryPage: React.FC = () => {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: idx * 0.05 }}
-                                    className="group relative bg-white border border-gray-100 rounded-[3rem] p-10 hover:shadow-2xl hover:border-black/5 transition-all duration-500"
+                                    className="group relative bg-white border border-gray-100 rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 hover:shadow-2xl hover:border-black/5 transition-all duration-500"
                                 >
                                     <div className="flex flex-col lg:flex-row gap-12">
                                         {/* Order Header Info */}
@@ -161,13 +161,13 @@ const OrderHistoryPage: React.FC = () => {
                                                         </div>
                                                         <div className="flex-1 space-y-2">
                                                             <h4 className="font-black text-sm uppercase tracking-tight line-clamp-1">{item.product?.name}</h4>
-                                                            <div className="flex items-center space-x-4 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                                                            <div className="flex flex-wrap items-center gap-2 md:gap-4 text-[9px] md:text-[10px] font-black uppercase tracking-widest text-gray-400">
                                                                 <span>Qty: {item.quantity}</span>
-                                                                <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
+                                                                <span className="w-1 h-1 bg-gray-200 rounded-full hidden md:block"></span>
                                                                 <span className="text-black">₹{item.product?.price.toLocaleString()}</span>
                                                                 {order.orderStatus === 'delivered' && (
                                                                     <>
-                                                                        <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
+                                                                        <span className="w-1 h-1 bg-gray-200 rounded-full hidden md:block"></span>
                                                                         <button
                                                                             onClick={() => setReviewModal({ isOpen: true, orderId: order._id, productId: item.product?._id, productName: item.product?.name })}
                                                                             className="text-black hover:underline cursor-pointer"
@@ -205,14 +205,14 @@ const OrderHistoryPage: React.FC = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="bg-white w-full max-w-xl rounded-[4rem] p-16 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden relative"
+                            className="bg-white w-full max-w-xl rounded-[2rem] md:rounded-[4rem] p-8 md:p-16 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden relative"
                         >
                             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-gray-100 via-black to-gray-100"></div>
 
-                            <h2 className="text-4xl font-black tracking-tighter uppercase mb-2">Submit Feedback</h2>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-12">Product: <span className="text-black">{reviewModal.productName}</span></p>
+                            <h2 className="text-3xl md:text-4xl font-black tracking-tighter uppercase mb-2">Submit Feedback</h2>
+                            <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-gray-400 mb-8 md:mb-12">Product: <span className="text-black">{reviewModal.productName}</span></p>
 
-                            <div className="space-y-10">
+                            <div className="space-y-8 md:space-y-10">
                                 <div className="space-y-4">
                                     <label className="text-[10px] font-black uppercase tracking-[0.3em] block">Rating Calibration</label>
                                     <div className="flex space-x-2">
@@ -242,13 +242,13 @@ const OrderHistoryPage: React.FC = () => {
                                     <button
                                         disabled={isSubmitting}
                                         onClick={handleSubmitReview}
-                                        className="flex-1 bg-black text-white h-20 rounded-full font-black text-xs uppercase tracking-[0.3em] hover:bg-gray-900 transition-all flex items-center justify-center space-x-4 shadow-2xl shadow-black/20 disabled:opacity-50"
+                                        className="flex-1 bg-black text-white h-16 md:h-20 rounded-full font-black text-[9px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] hover:bg-gray-900 transition-all flex items-center justify-center space-x-2 md:space-x-4 shadow-2xl shadow-black/20 disabled:opacity-50"
                                     >
                                         {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>Submit Certification</span>}
                                     </button>
                                     <button
                                         onClick={() => setReviewModal(null)}
-                                        className="px-10 h-20 rounded-full border border-gray-100 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-gray-50 transition-all"
+                                        className="px-6 md:px-10 h-16 md:h-20 rounded-full border border-gray-100 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] hover:bg-gray-50 transition-all"
                                     >
                                         Abort
                                     </button>
