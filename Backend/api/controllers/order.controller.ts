@@ -10,6 +10,21 @@ import handleError from "../utils/handleError.js"
 export const createOrderController = async (req: Request, res: Response) => {
   try {
     const { razorpayPaymentId, razorpayOrderId, razorpaySignature, addressId, paymentMethod } = req.body;
+
+    if (paymentMethod === 'online' && razorpayPaymentId && razorpayOrderId && razorpaySignature) {
+      const crypto = await import('crypto');
+      const expectedSignature = crypto
+        .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
+        .update(razorpayOrderId + '|' + razorpayPaymentId)
+        .digest('hex');
+
+      if (expectedSignature !== razorpaySignature) {
+        return res.status(httpStatus.BAD_REQUEST).json(
+          buildResponse(httpStatus.BAD_REQUEST, { message: 'Invalid payment signature' })
+        );
+      }
+    }
+
     const cart: any = await Cart.findOne({ user: (req as any).user._id }).populate('items.product')
 
     if (!cart || cart.items.length === 0) {

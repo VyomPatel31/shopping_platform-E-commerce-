@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, Menu, X, User, Search, Heart, ShoppingCart } from 'lucide-react';
+import { LogOut, Menu, X, User, Search, Heart, ShoppingCart, ShoppingBag, Home } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useCartStore } from '../../features/cart/store/cartStore';
 import { useSearchStore } from '../../store/searchStore';
@@ -15,7 +15,6 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { query, setQuery } = useSearchStore();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const cartQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -41,10 +40,10 @@ const Navbar: React.FC = () => {
     useWishlistStore.getState().clearWishlist();
     navigate('/');
     setShowLogoutConfirm(false);
-    setMobileMenuOpen(false);
   };
 
   return (
+    <>
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md py-3 shadow-sm border-b border-gray-100' : 'bg-white py-5'}`}>
       <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-between">
         {/* LOGO */}
@@ -127,15 +126,7 @@ const Navbar: React.FC = () => {
                 </Link>
             )}
 
-            {/* Mobile Menu Icon - Solid Style */}
-            <button 
-              onClick={() => {
-                setMobileMenuOpen(!mobileMenuOpen);
-              }}
-              className="md:hidden bg-black text-white p-2.5 rounded-xl z-50 shadow-lg shadow-black/20"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+            {/* Removed Mobile Menu Icon */}
           </div>
         </div>
       </div>
@@ -185,40 +176,44 @@ const Navbar: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* MOBILE MENU */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-white z-40 flex flex-col p-10 pt-24 space-y-8"
-          >
-            <Link onClick={() => setMobileMenuOpen(false)} to="/" className="text-3xl font-black uppercase tracking-tighter">Home</Link>
-            <Link onClick={() => setMobileMenuOpen(false)} to="/products" className="text-3xl font-black uppercase tracking-tighter">Shop</Link>
-            <Link onClick={() => setMobileMenuOpen(false)} to="/wishlist" className="text-3xl font-black uppercase tracking-tighter">Wishlist</Link>
-            <Link onClick={() => setMobileMenuOpen(false)} to="/cart" className="text-3xl font-black uppercase tracking-tighter">Cart</Link>
-            <div className="pt-8 border-t border-gray-100 flex flex-col space-y-4">
-            {isAuthenticated ? (
-                <>
-                <Link onClick={() => setMobileMenuOpen(false)} to="/profile" className="text-xl font-bold">My Profile</Link>
-                <Link onClick={() => setMobileMenuOpen(false)} to="/orders" className="text-xl font-bold">My Orders</Link>
-                <button 
-                  onClick={handleLogout}
-                  className="text-xl font-bold text-red-500 text-left"
-                >
-                  Logout
-                </button>
-                </>
-              ) : (
-                <Link onClick={() => setMobileMenuOpen(false)} to="/login" className="text-xl font-bold">Sign In</Link>
+    </nav>
+    
+    {/* MOBILE BOTTOM NAVIGATION */}
+    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-black text-white z-[100] px-6 py-4 flex items-center justify-between rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+        <Link to="/" className="flex flex-col items-center space-y-1 text-white/50 hover:text-white transition-colors">
+            <Home className="w-6 h-6" />
+            <span className="text-[8px] font-black uppercase tracking-widest leading-none">Home</span>
+        </Link>
+        <Link to="/products" className="flex flex-col items-center space-y-1 text-white/50 hover:text-white transition-colors">
+            <Search className="w-6 h-6" />
+            <span className="text-[8px] font-black uppercase tracking-widest leading-none">Explore</span>
+        </Link>
+        <Link to="/cart" className="relative flex flex-col items-center space-y-1 text-white/50 hover:text-white transition-colors">
+            <div className="bg-white text-black p-3 rounded-full -mt-8 shadow-xl hover:scale-105 transition-transform flex items-center justify-center">
+              <ShoppingBag className="w-6 h-6" />
+              {cartQuantity > 0 && (
+                <span className="absolute -top-1 -right-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white shadow-sm ring-2 ring-white">
+                  {cartQuantity}
+                </span>
               )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
+            <span className="text-[8px] font-black uppercase tracking-widest leading-none text-white pt-1">Bag</span>
+        </Link>
+        <Link to="/wishlist" className="relative flex flex-col items-center space-y-1 text-white/50 hover:text-white transition-colors">
+            <Heart className="w-6 h-6" />
+            {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white text-[8px] font-black text-black">
+                    {wishlistCount}
+                </span>
+            )}
+            <span className="text-[8px] font-black uppercase tracking-widest leading-none">Saves</span>
+        </Link>
+        <Link to={isAuthenticated ? "/profile" : "/login"} className="flex flex-col items-center space-y-1 text-white/50 hover:text-white transition-colors">
+            <User className="w-6 h-6" />
+            <span className="text-[8px] font-black uppercase tracking-widest leading-none">Account</span>
+        </Link>
+    </div>
+    </>
   );
 };
 

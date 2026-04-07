@@ -376,7 +376,7 @@ const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f3f3] text-black pb-20">
+    <div className="min-h-screen bg-[#f3f3f3] text-black pb-32 md:pb-20">
       <Navbar />
       <main className="pt-24 px-4 max-w-7xl mx-auto">
         {/* Stats Grid */}

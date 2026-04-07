@@ -324,7 +324,7 @@ const ProductDetailPage: React.FC = () => {
       </main>
 
       {/* STICKY MOBILE PURCHASE BAR */}
-      <div className="md:hidden fixed bottom-[60px] left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-gray-100 p-4 z-[90] flex items-center gap-4 animate-in slide-in-from-bottom duration-500">
+      <div className="md:hidden fixed bottom-[80px] left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-gray-100 p-4 z-[90] flex items-center gap-4 animate-in slide-in-from-bottom duration-500">
         <div className="flex-1">
             <p className="text-[8px] font-black uppercase tracking-widest text-gray-400 leading-none">Price</p>
             <p className="text-xl font-black text-black tracking-tighter">₹{product.price.toLocaleString()}</p>
