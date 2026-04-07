@@ -93,9 +93,12 @@ connectDB().then((dbStatus?: string) => {
   //@ts-ignore
   app.use('/api', routes)
 
-  // 🔹 EJS Routes Example
-  app.get('/', (req: Request, res: Response) => {
-    res.render('index', { databaseStatus: dbStatus })
+  // 🔹 Serve static files from the React app build directory
+  app.use(express.static(path.join(__dirname, '../Frontend/dist')))
+
+  // 🔹 Catch all handler: send back React's index.html file for client-side routing
+  app.get(/^\/(?!api).*/, (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '../Frontend/dist/index.html'))
   })
 
   // 🔹 Global Error Handler

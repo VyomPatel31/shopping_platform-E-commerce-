@@ -151,6 +151,11 @@ const CartPage: React.FC = () => {
         }
 
         const rzp1 = new (window as any).Razorpay(options);
+        rzp1.on('payment.failed', function (response: any) {
+          console.error('Payment failed:', response.error);
+          toast.error('Payment failed. Please try again.');
+          rzp1.close();
+        });
         rzp1.open();
       } else {
         // COD logic
