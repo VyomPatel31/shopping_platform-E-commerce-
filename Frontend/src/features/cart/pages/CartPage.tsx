@@ -164,7 +164,8 @@ const CartPage: React.FC = () => {
       }
 
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Payment Error');
+      console.error('Checkout sequence error:', err);
+      toast.error(err.response?.data?.message || err.message || 'Payment Error');
     } finally {
       setIsCheckingOut(false);
     }
