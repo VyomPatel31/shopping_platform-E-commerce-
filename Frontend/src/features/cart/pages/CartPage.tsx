@@ -140,7 +140,7 @@ const CartPage: React.FC = () => {
 
         const options = {
           key: razorpayKey,
-          amount,
+          amount:Math.round(subtotal * 100),
           currency: "INR",
           name: "SHOPHUB",
           description: "Secure Payment",
