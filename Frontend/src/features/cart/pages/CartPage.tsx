@@ -335,27 +335,27 @@ const CartPage: React.FC = () => {
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">Full Name</label>
-                    <input required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.fullName} onChange={e => setNewAddress({ ...newAddress, fullName: e.target.value })} />
+                    <input name="name" autoComplete="name" required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.fullName} onChange={e => setNewAddress({ ...newAddress, fullName: e.target.value })} />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">Mobile Number</label>
-                    <input required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.phone} onChange={e => setNewAddress({ ...newAddress, phone: e.target.value })} />
+                    <input name="mobile" autoComplete="tel" required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.phone} onChange={e => setNewAddress({ ...newAddress, phone: e.target.value })} />
                   </div>
                   <div className="col-span-2 space-y-1">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">House No, Road, Area</label>
-                    <input required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.addressLine1} onChange={e => setNewAddress({ ...newAddress, addressLine1: e.target.value })} />
+                    <input name="address" autoComplete="street-address" required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.addressLine1} onChange={e => setNewAddress({ ...newAddress, addressLine1: e.target.value })} />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">City</label>
-                    <input required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.city} onChange={e => setNewAddress({ ...newAddress, city: e.target.value })} />
+                    <input name="city" autoComplete="address-level2" required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.city} onChange={e => setNewAddress({ ...newAddress, city: e.target.value })} />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">Pincode</label>
-                    <input required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.pincode} onChange={e => setNewAddress({ ...newAddress, pincode: e.target.value })} />
+                    <input name="pincode" autoComplete="postal-code" required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.pincode} onChange={e => setNewAddress({ ...newAddress, pincode: e.target.value })} />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">State</label>
-                    <input required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.state} onChange={e => setNewAddress({ ...newAddress, state: e.target.value })} />
+                    <input name="state" autoComplete="address-level1" required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.state} onChange={e => setNewAddress({ ...newAddress, state: e.target.value })} />
                   </div>
                   <div className="col-span-2 pt-4">
                     <button type="submit" className="w-full bg-black text-white font-black px-10 py-5 rounded-full text-xs uppercase tracking-[0.3em] shadow-xl hover:bg-gray-800 transition-all">Save & Continue</button>
