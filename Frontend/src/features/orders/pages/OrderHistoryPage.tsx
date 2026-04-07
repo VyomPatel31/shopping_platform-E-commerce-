@@ -156,7 +156,7 @@ const OrderHistoryPage: React.FC = () => {
                                                             <img
                                                                 src={item.product?.images?.[0] || 'https://via.placeholder.com/300'}
                                                                 alt=""
-                                                                className="w-full h-full object-contain grayscale group-hover/item:grayscale-0 transition-all duration-500"
+                                                                className="w-full h-full object-contain  group-hover/item: transition-all duration-500"
                                                             />
                                                         </div>
                                                         <div className="flex-1 space-y-2">
