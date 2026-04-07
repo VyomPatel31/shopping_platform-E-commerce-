@@ -68,10 +68,10 @@ const HomePage: React.FC = () => {
 
                     <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                         {[
-                            { name: 'Timepieces', desc: 'Precision & Style', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800' },
-                            { name: 'Aesthetics', desc: 'Daily Essentials', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800' },
-                            { name: 'Apparel', desc: 'Modern Couture', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800' },
-                            { name: 'Lifestyle', desc: 'Home Atmosphere', img: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=800' }
+                            { name: 'Jewellery', desc: 'Precision & Style', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800' },
+                            { name: 'Beauty & Personal Care', desc: 'Daily Essentials', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800' },
+                            { name: 'Clothing & Apparel', desc: 'Modern Couture', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800' },
+                            { name: 'Home & Kitchen', desc: 'Home Atmosphere', img: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=800' }
                         ].map((cat) => (
                             <motion.div
                                 whileHover={{ y: -8 }}
@@ -84,7 +84,7 @@ const HomePage: React.FC = () => {
                                 <div className="absolute bottom-6 left-6 z-20 space-y-2">
                                     <h3 className="text-2xl font-black text-black tracking-tight uppercase">{cat.name}</h3>
                                     <p className="text-[10px] font-black text-black/40 uppercase tracking-widest">{cat.desc}</p>
-                                    <Link to="/products" className="mt-4 flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-black hover:tracking-[0.4em] transition-all">
+                                    <Link to="/products" state={{ category: cat.name }} className="mt-4 flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-black hover:tracking-[0.4em] transition-all">
                                         <span>Enter</span>
                                         <ArrowRight className="w-3 h-3" />
                                     </Link>

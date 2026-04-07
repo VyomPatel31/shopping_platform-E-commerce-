@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from '../../../components/layout/Navbar';
 import Footer from '../../../components/layout/Footer';
 import ProductList from '../components/ProductList';
 import { Star, SlidersHorizontal, X, ArrowRight, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const categories = ['Electronics', 'Accessories', 'Fashion', 'Home Decor', 'Gaming', 'Lifestyle'];
+import { PRODUCT_CATEGORIES } from '../../../constants/categories';
 
 const ProductsPage: React.FC = () => {
-    const [selectedCategory, setSelectedCategory] = useState<string>('');
-    const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
+    const location = useLocation();
+    const [selectedCategory, setSelectedCategory] = useState<string>(location.state?.category || '');
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000]);
     const [minRating, setMinRating] = useState<number>(0);
     const [sortBy, setSortBy] = useState<string>('latest');
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+    React.useEffect(() => {
+        if (location.state?.category) {
+            setSelectedCategory(location.state.category);
+        }
+    }, [location.state?.category]);
 
     return (
         <div className="min-h-screen bg-white">
@@ -67,7 +74,7 @@ const ProductsPage: React.FC = () => {
                                 >
                                     All Archives
                                 </button>
-                                {categories.map(cat => (
+                                {PRODUCT_CATEGORIES.map(cat => (
                                     <button 
                                         key={cat}
                                         onClick={() => setSelectedCategory(cat)}
@@ -153,7 +160,7 @@ const ProductsPage: React.FC = () => {
                                         <div className="space-y-6">
                                             <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Department</h3>
                                             <div className="grid grid-cols-2 gap-3">
-                                                {['', ...categories].map(cat => (
+                                                {['', ...PRODUCT_CATEGORIES].map(cat => (
                                                     <button 
                                                         key={cat}
                                                         onClick={() => {

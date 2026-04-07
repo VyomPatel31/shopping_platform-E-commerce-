@@ -29,6 +29,8 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
+import { PRODUCT_CATEGORIES } from "../../../constants/categories";
+
 interface ProductFormData {
   _id?: string;
   name: string;
@@ -39,24 +41,6 @@ interface ProductFormData {
   stock: number;
   images: string;
 }
-
-const CATEGORIES = [
-  "Electronics",
-  "Mobiles & Accessories",
-  "Computers & Laptops",
-  "Clothing & Apparel",
-  "Shoes & Footwear",
-  "Home & Kitchen",
-  "Books",
-  "Sports & Fitness",
-  "Beauty & Personal Care",
-  "Toys & Games",
-  "Jewellery",
-  "Automotive",
-  "Grocery & Food",
-  "Health & Wellness",
-  "Other",
-];
 
 type ImageMode = "url" | "upload";
 type AdminTab = "products" | "orders" | "reviews" | "users";
@@ -596,7 +580,7 @@ const AdminDashboard: React.FC = () => {
                             className="w-full border border-gray-300 rounded py-2 px-3 focus:ring-1 focus:ring-[#febd69] outline-none bg-white"
                           >
                             <option value="">— Select Category —</option>
-                            {CATEGORIES.map((cat) => (
+                            {PRODUCT_CATEGORIES.map((cat) => (
                               <option key={cat} value={cat}>
                                 {cat}
                               </option>
