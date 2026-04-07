@@ -1,40 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from '../../../components/layout/Navbar';
-import Footer from '../../../components/layout/Footer';
-import { useCartStore } from '../store/cartStore';
-import { Plus, Minus, Loader2, MapPin, Trash2, ShieldCheck, ArrowRight, X, ShoppingBag } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import toast from 'react-hot-toast';
-import axiosInstance from '../../../api/axiosInstance';
-import { useAuthStore } from '../../../store/authStore';
+import React, { useEffect, useState } from "react";
+import Navbar from "../../../components/layout/Navbar";
+import Footer from "../../../components/layout/Footer";
+import { useCartStore } from "../store/cartStore";
+import {
+  Plus,
+  Minus,
+  Loader2,
+  MapPin,
+  Trash2,
+  ShieldCheck,
+  ArrowRight,
+  X,
+  ShoppingBag,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
+import axiosInstance from "../../../api/axiosInstance";
+import { useAuthStore } from "../../../store/authStore";
 
 const CartPage: React.FC = () => {
-  const { items, fetchCart, updateQuantity: storeUpdateQuantity, removeItem: storeRemoveItem, isLoading } = useCartStore();
+  const {
+    items,
+    fetchCart,
+    updateQuantity: storeUpdateQuantity,
+    removeItem: storeRemoveItem,
+    isLoading,
+  } = useCartStore();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const navigate = useNavigate();
-  const user = useAuthStore(state => state.user);
+  const user = useAuthStore((state) => state.user);
 
   const [addresses, setAddresses] = useState<any[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [isFetchingAddresses, setIsFetchingAddresses] = useState(false);
   const [newAddress, setNewAddress] = useState({
-    fullName: user?.name || '',
-    phone: '',
-    pincode: '',
-    addressLine1: '',
-    city: '',
-    state: ''
+    fullName: user?.name || "",
+    phone: "",
+    pincode: "",
+    addressLine1: "",
+    city: "",
+    state: "",
   });
-  const [paymentMethod, setPaymentMethod] = useState<'online' | 'cod'>('online');
+  const [paymentMethod, setPaymentMethod] = useState<"online" | "cod">(
+    "online",
+  );
   const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY;
 
   const fetchAddresses = async () => {
     if (!user) return;
     setIsFetchingAddresses(true);
     try {
-      const res = await axiosInstance.get('/address');
+      const res = await axiosInstance.get("/address");
       const data = res.data.data || [];
       setAddresses(data);
       if (data.length > 0) {
@@ -42,7 +60,7 @@ const CartPage: React.FC = () => {
         setSelectedAddress(def._id);
       }
     } catch (err) {
-      console.error('Failed to fetch addresses');
+      console.error("Failed to fetch addresses");
     } finally {
       setIsFetchingAddresses(false);
     }
@@ -57,16 +75,16 @@ const CartPage: React.FC = () => {
     try {
       await storeUpdateQuantity(productId, quantity);
     } catch (error) {
-      toast.error('Failed to update quantity');
+      toast.error("Failed to update quantity");
     }
   };
 
   const handleRemoveItem = async (productId: string) => {
     try {
       await storeRemoveItem(productId);
-      toast.success('Removed from cart');
+      toast.success("Removed from cart");
     } catch (error) {
-      toast.error('Failed to remove item');
+      toast.error("Failed to remove item");
     }
   };
 
@@ -78,97 +96,110 @@ const CartPage: React.FC = () => {
   const handleAddAddress = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axiosInstance.post('/address', newAddress);
-      toast.success('Address added successfully!');
+      await axiosInstance.post("/address", newAddress);
+      toast.success("Address added successfully!");
       setShowAddressForm(false);
       fetchAddresses();
     } catch (err) {
-      toast.error('Failed to add address');
+      toast.error("Failed to add address");
     }
   };
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
+
     if (!user) {
-      toast.error('Please secure an account to proceed to checkout');
-      navigate('/login');
+      toast.error("Please login first");
+      navigate("/login");
       return;
     }
+
     if (!selectedAddress) {
-      toast.error('Please add and select a delivery address first');
+      toast.error("Please select delivery address");
       setShowAddressForm(true);
       return;
     }
 
     setIsCheckingOut(true);
+
     try {
-      if (paymentMethod === 'online') {
+      if (paymentMethod === "online") {
         if (!razorpayKey) {
-          throw new Error('Payment gateway key is missing. Please configure VITE_RAZORPAY_KEY in Frontend/.env');
+          throw new Error("Razorpay key missing");
         }
 
-        const paymentRes = await axiosInstance.post('/payment/create-order', { amount: subtotal });
-        const { id: order_id } = paymentRes.data.data;
+        if (!(window as any).Razorpay) {
+          throw new Error("Razorpay SDK not loaded");
+        }
 
-          const addressInfo = addresses.find(a => a._id === selectedAddress);
-          const contact = addressInfo?.phone || '0000000000';
+        const paymentRes = await axiosInstance.post("/payment/create-order");
+        const { id: order_id, amount } = paymentRes.data.data;
 
-          const options = {
-            key: razorpayKey,
-            amount: Math.round(subtotal * 100),
-            currency: 'INR',
-            name: 'SHOPHUB',
-            description: 'Secure Payment',
-            order_id: order_id,
-            handler: async function (response: any) {
-              try {
-                const res = await axiosInstance.post('/orders', {
-                  razorpayPaymentId: response.razorpay_payment_id,
-                  razorpayOrderId: response.razorpay_order_id,
-                  razorpaySignature: response.razorpay_signature,
-                  addressId: selectedAddress,
-                  paymentMethod: 'online'
-                });
-                await fetchCart();
-                toast.success('Order Placed Successfully!');
-                navigate('/order-success/' + res.data.data._id);
-              } catch (err: any) {
-                toast.error('Order Finalization Failed');
-              }
-            },
-            prefill: {
-              name: user?.name || '',
-              email: user?.email || '',
-              contact: contact
-            },
-            theme: {
-              color: '#000000'
+        const addressInfo = addresses.find((a) => a._id === selectedAddress);
+        const contact = addressInfo?.phone || "0000000000";
+
+        const options = {
+          key: razorpayKey,
+          amount,
+          currency: "INR",
+          name: "SHOPHUB",
+          description: "Secure Payment",
+          order_id,
+          handler: async (response: any) => {
+            try {
+              const res = await axiosInstance.post("/orders", {
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpayOrderId: response.razorpay_order_id,
+                razorpaySignature: response.razorpay_signature,
+                addressId: selectedAddress,
+                paymentMethod: "online",
+              });
+
+              await fetchCart();
+              toast.success("Order placed successfully");
+              navigate("/order-success/" + res.data.data._id);
+            } catch (err: any) {
+              toast.error("Order finalization failed");
+            } finally {
+              setIsCheckingOut(false);
             }
-          };
+          },
+          prefill: {
+            name: user?.name || "",
+            email: user?.email || "",
+            contact,
+          },
+          theme: {
+            color: "#000000",
+          },
+        };
 
         const rzp1 = new (window as any).Razorpay(options);
-        rzp1.on('payment.failed', function (response: any) {
-          console.error('Payment failed:', response.error);
-          toast.error('Payment failed. Please try again.');
-          rzp1.close();
+
+        rzp1.on("payment.failed", function (response: any) {
+          toast.error(response.error.description || "Payment failed");
+          setIsCheckingOut(false);
         });
+
         rzp1.open();
-      } else {
-        // COD logic
-        const res = await axiosInstance.post('/orders', {
-          addressId: selectedAddress,
-          paymentMethod: 'cod'
-        });
-        await fetchCart();
-        toast.success('Order Placed (COD) Successfully!');
-        navigate('/order-success/' + res.data.data._id);
+        return;
       }
 
+      // COD
+      const res = await axiosInstance.post("/orders", {
+        addressId: selectedAddress,
+        paymentMethod: "cod",
+      });
+
+      await fetchCart();
+      toast.success("COD order placed");
+      navigate("/order-success/" + res.data.data._id);
     } catch (err: any) {
-      console.error('Checkout sequence error:', err);
-      toast.error(err.response?.data?.message || err.message || 'Payment Error');
+      toast.error(err.response?.data?.message || err.message);
     } finally {
-      setIsCheckingOut(false);
+      if (paymentMethod === "cod") {
+        setIsCheckingOut(false);
+      }
     }
   };
 
@@ -179,9 +210,16 @@ const CartPage: React.FC = () => {
         <main className="flex-1 flex flex-col items-center justify-center text-center px-6 pt-24">
           <div className="p-16 border-2 border-dashed border-gray-100 rounded-[3rem] max-w-md w-full">
             <ShoppingBag className="w-16 h-16 text-gray-200 mx-auto mb-10" />
-            <h1 className="text-4xl font-black uppercase tracking-tighter mb-4">Cart is Empty</h1>
-            <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-10">You haven't added anything to your cart yet.</p>
-            <Link to="/products" className="inline-flex items-center space-x-3 bg-black text-white px-10 py-4 rounded-full font-black text-xs uppercase tracking-widest shadow-xl hover:bg-gray-800 transition-all">
+            <h1 className="text-4xl font-black uppercase tracking-tighter mb-4">
+              Cart is Empty
+            </h1>
+            <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-10">
+              You haven't added anything to your cart yet.
+            </p>
+            <Link
+              to="/products"
+              className="inline-flex items-center space-x-3 bg-black text-white px-10 py-4 rounded-full font-black text-xs uppercase tracking-widest shadow-xl hover:bg-gray-800 transition-all"
+            >
               <span>Browse Products</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
@@ -198,16 +236,18 @@ const CartPage: React.FC = () => {
 
       <main className="pt-24 md:pt-40 pb-32 md:pb-24 px-4 md:px-6 max-w-[1400px] mx-auto w-full">
         <div className="flex flex-col md:flex-row items-baseline space-x-0 md:space-x-6 mb-8 md:mb-16 border-b-4 md:border-b-8 border-black pb-6 md:pb-8 overflow-hidden">
-          <h1 className="text-3xl md:text-6xl font-black uppercase tracking-tighter shrink-0 mb-4 md:mb-0">Your Shopping Cart</h1>
+          <h1 className="text-3xl md:text-6xl font-black uppercase tracking-tighter shrink-0 mb-4 md:mb-0">
+            Your Shopping Cart
+          </h1>
           <div className="hidden md:flex flex-1 h-2 bg-gray-50 items-center px-4">
             <div className="w-[30%] h-full bg-black"></div>
           </div>
           {items.length > 0 && (
             <button
               onClick={() => {
-                if (window.confirm('Clear all items from cart?')) {
+                if (window.confirm("Clear all items from cart?")) {
                   useCartStore.getState().clearCart();
-                  toast.success('Cart cleared');
+                  toast.success("Cart cleared");
                 }
               }}
               className="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-700 transition-all border-b-2 border-red-500 hover:border-red-700"
@@ -233,7 +273,10 @@ const CartPage: React.FC = () => {
                   >
                     <div className="w-40 h-40 bg-gray-50 rounded-2xl flex-shrink-0 flex items-center justify-center p-6 border border-gray-50 group-hover:border-gray-200 transition-all">
                       <img
-                        src={(item.product?.images && item.product?.images[0]) || 'https://via.placeholder.com/300'}
+                        src={
+                          (item.product?.images && item.product?.images[0]) ||
+                          "https://via.placeholder.com/300"
+                        }
                         alt=""
                         className="w-full h-full object-contain  transition-all duration-500"
                       />
@@ -242,23 +285,41 @@ const CartPage: React.FC = () => {
                     <div className="flex-1 flex flex-col justify-between py-2">
                       <div className="space-y-2">
                         <div className="flex flex-col md:flex-row justify-between items-start gap-2">
-                          <h3 className="text-lg md:text-xl font-black text-black uppercase tracking-tighter line-clamp-2 md:max-w-sm leading-tight">{item.product?.name}</h3>
-                          <div className="text-xl md:text-2xl font-black text-black tracking-tighter self-end md:self-auto">₹{item.product?.price.toLocaleString()}</div>
+                          <h3 className="text-lg md:text-xl font-black text-black uppercase tracking-tighter line-clamp-2 md:max-w-sm leading-tight">
+                            {item.product?.name}
+                          </h3>
+                          <div className="text-xl md:text-2xl font-black text-black tracking-tighter self-end md:self-auto">
+                            ₹{item.product?.price.toLocaleString()}
+                          </div>
                         </div>
-                        <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-gray-400">SKU: {item.product?._id.substring(0, 8)}</span>
+                        <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-gray-400">
+                          SKU: {item.product?._id.substring(0, 8)}
+                        </span>
                       </div>
 
                       <div className="flex items-center justify-between mt-8">
                         <div className="flex items-center space-x-6 bg-gray-50 rounded-full px-6 py-3 border border-gray-100">
                           <button
-                            onClick={() => handleUpdateQuantity(item.product?._id, Math.max(1, item.quantity - 1))}
+                            onClick={() =>
+                              handleUpdateQuantity(
+                                item.product?._id,
+                                Math.max(1, item.quantity - 1),
+                              )
+                            }
                             className="text-black hover:text-gray-400 transition-colors"
                           >
                             <Minus className="w-4 h-4" />
                           </button>
-                          <span className="w-8 text-center text-sm font-black text-black">{item.quantity}</span>
+                          <span className="w-8 text-center text-sm font-black text-black">
+                            {item.quantity}
+                          </span>
                           <button
-                            onClick={() => handleUpdateQuantity(item.product?._id, item.quantity + 1)}
+                            onClick={() =>
+                              handleUpdateQuantity(
+                                item.product?._id,
+                                item.quantity + 1,
+                              )
+                            }
                             className="text-black hover:text-gray-400 transition-colors"
                           >
                             <Plus className="w-4 h-4" />
@@ -282,25 +343,33 @@ const CartPage: React.FC = () => {
             <div className="bg-gray-50 rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 border border-gray-100">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
                 <div className="space-y-1 md:space-y-2">
-                  <h2 className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Indian Market Checkout</h2>
-                  <p className="text-2xl md:text-3xl font-black uppercase tracking-tighter flex items-center gap-3 leading-none">Delivery Address</p>
+                  <h2 className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">
+                    Indian Market Checkout
+                  </h2>
+                  <p className="text-2xl md:text-3xl font-black uppercase tracking-tighter flex items-center gap-3 leading-none">
+                    Delivery Address
+                  </p>
                 </div>
                 <button
                   onClick={() => setShowAddressForm(!showAddressForm)}
                   className="text-[10px] font-black uppercase tracking-widest border-b-2 border-black hover:text-gray-400 hover:border-gray-400 transition-all"
                 >
-                  {showAddressForm ? 'Cancel Entry' : 'Add New Address'}
+                  {showAddressForm ? "Cancel Entry" : "Add New Address"}
                 </button>
               </div>
 
               {!showAddressForm ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {isFetchingAddresses ? (
-                    <div className="col-span-2 py-10 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-black opacity-20" /></div>
+                    <div className="col-span-2 py-10 flex justify-center">
+                      <Loader2 className="w-8 h-8 animate-spin text-black opacity-20" />
+                    </div>
                   ) : addresses.length === 0 ? (
                     <div className="col-span-2 py-12 border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center text-center opacity-50">
                       <MapPin className="w-8 h-8 mb-4" />
-                      <p className="text-xs font-black uppercase tracking-widest">No verified addresses found</p>
+                      <p className="text-xs font-black uppercase tracking-widest">
+                        No verified addresses found
+                      </p>
                     </div>
                   ) : (
                     addresses.map((addr) => (
@@ -308,17 +377,24 @@ const CartPage: React.FC = () => {
                         whileHover={{ y: -4 }}
                         key={addr._id}
                         onClick={() => setSelectedAddress(addr._id)}
-                        className={`p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] cursor-pointer transition-all border-2 relative overflow-hidden ${selectedAddress === addr._id ? 'border-black bg-white shadow-xl' : 'border-gray-100 bg-white/50 hover:border-black/20 opacity-60'}`}
+                        className={`p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] cursor-pointer transition-all border-2 relative overflow-hidden ${selectedAddress === addr._id ? "border-black bg-white shadow-xl" : "border-gray-100 bg-white/50 hover:border-black/20 opacity-60"}`}
                       >
                         {selectedAddress === addr._id && (
-                          <div className="absolute top-0 right-0 bg-black text-white px-3 md:px-4 py-1 md:py-1.5 rounded-bl-xl md:rounded-bl-2xl text-[7px] md:text-[8px] font-black uppercase tracking-widest">Deliver to this</div>
+                          <div className="absolute top-0 right-0 bg-black text-white px-3 md:px-4 py-1 md:py-1.5 rounded-bl-xl md:rounded-bl-2xl text-[7px] md:text-[8px] font-black uppercase tracking-widest">
+                            Deliver to this
+                          </div>
                         )}
-                        <div className="font-black text-sm uppercase tracking-tight mb-4">{addr.fullName}</div>
+                        <div className="font-black text-sm uppercase tracking-tight mb-4">
+                          {addr.fullName}
+                        </div>
                         <p className="text-xs text-gray-500 font-bold uppercase tracking-wider leading-relaxed">
-                          {addr.addressLine1}<br />
+                          {addr.addressLine1}
+                          <br />
                           {addr.city}, {addr.state} - {addr.pincode}
                         </p>
-                        <div className="mt-6 text-[10px] font-black text-black opacity-40 uppercase tracking-widest">{addr.phone} (Mobile)</div>
+                        <div className="mt-6 text-[10px] font-black text-black opacity-40 uppercase tracking-widest">
+                          {addr.phone} (Mobile)
+                        </div>
                       </motion.div>
                     ))
                   )}
@@ -326,40 +402,128 @@ const CartPage: React.FC = () => {
               ) : (
                 <motion.form
                   initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
+                  animate={{ opacity: 1, height: "auto" }}
                   onSubmit={handleAddAddress}
                   className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white p-10 rounded-[2rem] border border-gray-100 shadow-xl"
                 >
                   <div className="flex justify-between items-center col-span-2 mb-4 border-b border-gray-50 pb-4">
-                    <h3 className="text-sm font-black uppercase tracking-[0.2em]">New Shipping Profile</h3>
-                    <button type="button" onClick={() => setShowAddressForm(false)} className="p-2 hover:bg-gray-100 rounded-full"><X className="w-4 h-4" /></button>
+                    <h3 className="text-sm font-black uppercase tracking-[0.2em]">
+                      New Shipping Profile
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddressForm(false)}
+                      className="p-2 hover:bg-gray-100 rounded-full"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">Full Name</label>
-                    <input name="name" autoComplete="name" required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.fullName} onChange={e => setNewAddress({ ...newAddress, fullName: e.target.value })} />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">
+                      Full Name
+                    </label>
+                    <input
+                      name="name"
+                      autoComplete="name"
+                      required
+                      className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none"
+                      value={newAddress.fullName}
+                      onChange={(e) =>
+                        setNewAddress({
+                          ...newAddress,
+                          fullName: e.target.value,
+                        })
+                      }
+                    />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">Mobile Number</label>
-                    <input name="mobile" autoComplete="tel" required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.phone} onChange={e => setNewAddress({ ...newAddress, phone: e.target.value })} />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">
+                      Mobile Number
+                    </label>
+                    <input
+                      name="mobile"
+                      autoComplete="tel"
+                      required
+                      className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none"
+                      value={newAddress.phone}
+                      onChange={(e) =>
+                        setNewAddress({ ...newAddress, phone: e.target.value })
+                      }
+                    />
                   </div>
                   <div className="col-span-2 space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">House No, Road, Area</label>
-                    <input name="address" autoComplete="street-address" required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.addressLine1} onChange={e => setNewAddress({ ...newAddress, addressLine1: e.target.value })} />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">
+                      House No, Road, Area
+                    </label>
+                    <input
+                      name="address"
+                      autoComplete="street-address"
+                      required
+                      className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none"
+                      value={newAddress.addressLine1}
+                      onChange={(e) =>
+                        setNewAddress({
+                          ...newAddress,
+                          addressLine1: e.target.value,
+                        })
+                      }
+                    />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">City</label>
-                    <input name="city" autoComplete="address-level2" required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.city} onChange={e => setNewAddress({ ...newAddress, city: e.target.value })} />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">
+                      City
+                    </label>
+                    <input
+                      name="city"
+                      autoComplete="address-level2"
+                      required
+                      className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none"
+                      value={newAddress.city}
+                      onChange={(e) =>
+                        setNewAddress({ ...newAddress, city: e.target.value })
+                      }
+                    />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">Pincode</label>
-                    <input name="pincode" autoComplete="postal-code" required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.pincode} onChange={e => setNewAddress({ ...newAddress, pincode: e.target.value })} />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">
+                      Pincode
+                    </label>
+                    <input
+                      name="pincode"
+                      autoComplete="postal-code"
+                      required
+                      className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none"
+                      value={newAddress.pincode}
+                      onChange={(e) =>
+                        setNewAddress({
+                          ...newAddress,
+                          pincode: e.target.value,
+                        })
+                      }
+                    />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">State</label>
-                    <input name="state" autoComplete="address-level1" required className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none" value={newAddress.state} onChange={e => setNewAddress({ ...newAddress, state: e.target.value })} />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block ml-2">
+                      State
+                    </label>
+                    <input
+                      name="state"
+                      autoComplete="address-level1"
+                      required
+                      className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 px-6 text-sm font-bold focus:bg-white focus:border-black transition-all outline-none"
+                      value={newAddress.state}
+                      onChange={(e) =>
+                        setNewAddress({ ...newAddress, state: e.target.value })
+                      }
+                    />
                   </div>
                   <div className="col-span-2 pt-4">
-                    <button type="submit" className="w-full bg-black text-white font-black px-10 py-5 rounded-full text-xs uppercase tracking-[0.3em] shadow-xl hover:bg-gray-800 transition-all">Save & Continue</button>
+                    <button
+                      type="submit"
+                      className="w-full bg-black text-white font-black px-10 py-5 rounded-full text-xs uppercase tracking-[0.3em] shadow-xl hover:bg-gray-800 transition-all"
+                    >
+                      Save & Continue
+                    </button>
                   </div>
                 </motion.form>
               )}
@@ -370,14 +534,20 @@ const CartPage: React.FC = () => {
             <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-gray-100 shadow-2xl relative overflow-hidden">
               <div className="relative z-10 space-y-10">
                 <div className="space-y-1">
-                  <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Price Summary</h2>
-                  <p className="text-3xl font-black uppercase tracking-tighter">Tax Invoice</p>
+                  <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">
+                    Price Summary
+                  </h2>
+                  <p className="text-3xl font-black uppercase tracking-tighter">
+                    Tax Invoice
+                  </p>
                 </div>
 
                 <div className="space-y-6 pt-10 border-t border-gray-50 text-xs font-bold uppercase tracking-widest">
                   <div className="flex justify-between items-center text-gray-400">
                     <span>Subtotal ({items.length} units)</span>
-                    <span className="text-black">₹{subtotal.toLocaleString()}</span>
+                    <span className="text-black">
+                      ₹{subtotal.toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center text-gray-400">
                     <span>Standard Shipping</span>
@@ -387,22 +557,28 @@ const CartPage: React.FC = () => {
 
                 <div className="pt-10 border-t border-gray-50">
                   <div className="flex justify-between items-end mb-8 md:mb-10">
-                    <span className="text-xs md:text-sm font-black uppercase tracking-widest mb-1">Total Amount</span>
-                    <span className="text-3xl md:text-5xl font-black text-black tracking-tighter leading-none">₹{subtotal.toLocaleString()}</span>
+                    <span className="text-xs md:text-sm font-black uppercase tracking-widest mb-1">
+                      Total Amount
+                    </span>
+                    <span className="text-3xl md:text-5xl font-black text-black tracking-tighter leading-none">
+                      ₹{subtotal.toLocaleString()}
+                    </span>
                   </div>
 
                   <div className="space-y-4 mb-8">
-                    <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400">Select Payment Method</h3>
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                      Select Payment Method
+                    </h3>
                     <div className="grid grid-cols-2 gap-4">
                       <button
-                        onClick={() => setPaymentMethod('online')}
-                        className={`py-4 rounded-2xl border-2 font-black text-[10px] uppercase tracking-widest transition-all ${paymentMethod === 'online' ? 'border-black bg-black text-white' : 'border-gray-100 text-gray-400 hover:border-black/20'}`}
+                        onClick={() => setPaymentMethod("online")}
+                        className={`py-4 rounded-2xl border-2 font-black text-[10px] uppercase tracking-widest transition-all ${paymentMethod === "online" ? "border-black bg-black text-white" : "border-gray-100 text-gray-400 hover:border-black/20"}`}
                       >
                         Online Pay
                       </button>
                       <button
-                        onClick={() => setPaymentMethod('cod')}
-                        className={`py-4 rounded-2xl border-2 font-black text-[10px] uppercase tracking-widest transition-all ${paymentMethod === 'cod' ? 'border-black bg-black text-white' : 'border-gray-100 text-gray-400 hover:border-black/20'}`}
+                        onClick={() => setPaymentMethod("cod")}
+                        className={`py-4 rounded-2xl border-2 font-black text-[10px] uppercase tracking-widest transition-all ${paymentMethod === "cod" ? "border-black bg-black text-white" : "border-gray-100 text-gray-400 hover:border-black/20"}`}
                       >
                         Cash (COD)
                       </button>
@@ -414,7 +590,9 @@ const CartPage: React.FC = () => {
                     disabled={isCheckingOut || isLoading || items.length === 0}
                     className="w-full h-20 bg-black text-white rounded-full font-black text-xs uppercase tracking-[0.4em] flex items-center justify-center space-x-4 shadow-2xl shadow-black/20 hover:bg-gray-800 transition-all disabled:opacity-30 transform active:scale-95"
                   >
-                    {isCheckingOut ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                    {isCheckingOut ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
                       <>
                         <span>Pay & Buy Now</span>
                         <ArrowRight className="w-5 h-5" />
@@ -425,7 +603,9 @@ const CartPage: React.FC = () => {
 
                 <div className="flex items-center justify-center space-x-3 pt-4 border-t border-gray-50 opacity-20 transition-opacity">
                   <ShieldCheck className="w-4 h-4" />
-                  <span className="text-[8px] font-black uppercase tracking-widest text-gray-400 leading-none">RBI Compliant Payment Interface</span>
+                  <span className="text-[8px] font-black uppercase tracking-widest text-gray-400 leading-none">
+                    RBI Compliant Payment Interface
+                  </span>
                 </div>
               </div>
             </div>
