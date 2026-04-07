@@ -92,7 +92,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="flex items-center space-x-1 pt-1 opacity-50 group-hover:opacity-100 transition-opacity">
             <div className="flex">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className={`w-3 h-3 ${i < Math.floor(product.rating || 4) ? 'text-black fill-current' : 'text-gray-200'}`} />
+                <Star key={i} className={`w-3 h-3 ${i < Math.floor(product.rating || 0) ? 'text-black fill-current' : 'text-gray-200'}`} />
               ))}
             </div>
             <span className="text-[8px] md:text-[10px] text-gray-400 font-bold uppercase tracking-widest ml-1">({product.numReviews || 0})</span>

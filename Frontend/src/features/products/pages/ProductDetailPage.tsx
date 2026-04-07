@@ -190,7 +190,7 @@ const ProductDetailPage: React.FC = () => {
                 <div className="flex items-center space-x-2 pt-2">
                    <div className="flex">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(product.rating || 4) ? 'text-black fill-current' : 'text-gray-100'}`} />
+                        <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(product.rating || 0) ? 'text-black fill-current' : 'text-gray-100'}`} />
                       ))}
                    </div>
                    <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest pl-2">Rated {product.rating} by Clientele</span>
