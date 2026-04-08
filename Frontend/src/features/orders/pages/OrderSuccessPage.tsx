@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { CheckCircle, FileText, Loader2, Download } from 'lucide-react';
-import Navbar from '../../../components/layout/Navbar';
-import axiosInstance from '../../../api/axiosInstance';
-import toast from 'react-hot-toast';
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { CheckCircle, FileText, Loader2, Download } from "lucide-react";
+import Navbar from "../../../components/layout/Navbar";
+import axiosInstance from "../../../api/axiosInstance";
+import toast from "react-hot-toast";
 
 const OrderSuccessPage: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
@@ -17,7 +17,7 @@ const OrderSuccessPage: React.FC = () => {
         const response = await axiosInstance.get(`/orders/${orderId}`);
         setOrder(response.data.data);
       } catch (error) {
-        toast.error('Failed to load order details');
+        toast.error("Failed to load order details");
       } finally {
         setIsLoading(false);
       }
@@ -44,8 +44,12 @@ const OrderSuccessPage: React.FC = () => {
       <div className="min-h-screen bg-white">
         <Navbar />
         <main className="pt-32 flex flex-col items-center justify-center text-center">
-          <h1 className="text-2xl font-bold text-black mb-4">Order Not Found</h1>
-          <Link to="/" className="text-black hover:underline">Return to Home</Link>
+          <h1 className="text-2xl font-bold text-black mb-4">
+            Order Not Found
+          </h1>
+          <Link to="/" className="text-black hover:underline">
+            Return to Home
+          </Link>
         </main>
       </div>
     );
@@ -58,7 +62,7 @@ const OrderSuccessPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white text-black">
       <Navbar />
-      
+
       <main className="pt-28 pb-12 px-6 max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -66,7 +70,7 @@ const OrderSuccessPage: React.FC = () => {
           className="p-8 md:p-12 glassmorphism rounded-[3rem] border border-green-500/20 shadow-2xl shadow-green-500/10"
         >
           <div className="text-center mb-10">
-            <motion.div 
+            <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", bounce: 0.5 }}
@@ -74,12 +78,19 @@ const OrderSuccessPage: React.FC = () => {
             >
               <CheckCircle className="w-12 h-12 text-green-500" />
             </motion.div>
-            <h1 className="text-4xl font-black text-black mb-2">Payment Successful!</h1>
-            <p className="text-gray-600">Your order has been placed successfully.</p>
+            <h1 className="text-4xl font-black text-black mb-2">
+              Payment Successful!
+            </h1>
+            <p className="text-gray-600">
+              Your order has been placed successfully.
+            </p>
           </div>
 
-          <div className="bg-black/5 rounded-3xl p-6 md:p-8 mb-8 border border-black/10" id="bill-section">
-            <div className="flex justify-between items-center border-b border-black/10 pb-6 mb-6">
+          <div
+            className="bg-black/5 rounded-3xl p-6 md:p-8 mb-8 border border-black/10"
+            id="bill-section"
+          >
+            {/* <div className="flex justify-between items-center border-b border-black/10 pb-6 mb-6">
               <div>
                 <p className="text-sm text-gray-600 mb-1">Order ID</p>
                 <p className="font-mono text-black tracking-wider">{order._id}</p>
@@ -87,6 +98,20 @@ const OrderSuccessPage: React.FC = () => {
               <div className="text-right">
                 <p className="text-sm text-gray-600 mb-1">Date</p>
                 <p className="text-black">{new Date(order.createdAt).toLocaleDateString()}</p>
+              </div>
+            </div> */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0 border-b border-black/10 pb-6 mb-6">
+              <div>
+                <p className="text-sm text-gray-600 mb-1">Order ID</p>
+                <p className="font-mono text-sm sm:text-base text-black tracking-wider break-all">
+                  {order._id}
+                </p>
+              </div>
+              <div className="sm:text-right">
+                <p className="text-sm text-gray-600 mb-1">Date</p>
+                <p className="text-black">
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </p>
               </div>
             </div>
 
@@ -97,12 +122,22 @@ const OrderSuccessPage: React.FC = () => {
 
             <div className="space-y-4 mb-8">
               {order.items.map((item: any, index: number) => (
-                <div key={index} className="flex justify-between items-center text-sm md:text-base">
+                <div
+                  key={index}
+                  className="flex justify-between items-center text-sm md:text-base"
+                >
                   <div className="flex items-center gap-4">
                     <span className="text-gray-600">{item.quantity}x</span>
-                    <span className="font-medium">{item.product?.name || 'Product'}</span>
+                    <span className="font-medium">
+                      {item.product?.name || "Product"}
+                    </span>
                   </div>
-                  <span className="font-mono text-black font-black">₹{(item.quantity * item.product?.price || 0).toLocaleString()}</span>
+                  <span className="font-mono text-black font-black">
+                    ₹
+                    {(
+                      item.quantity * item.product?.price || 0
+                    ).toLocaleString()}
+                  </span>
                 </div>
               ))}
             </div>
@@ -111,7 +146,7 @@ const OrderSuccessPage: React.FC = () => {
               <div className="flex justify-between items-center text-xl font-bold">
                 <span>Total Amount Paid</span>
                 <span className="text-black font-black text-3xl tracking-tighter">
-                  ₹{order.totalAmount?.toLocaleString() || '0.00'}
+                  ₹{order.totalAmount?.toLocaleString() || "0.00"}
                 </span>
               </div>
             </div>
