@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Lock, Loader2, ArrowLeft, KeySquare } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { authService } from '../services/auth.service.ts';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Lock, Loader2, ArrowLeft, KeySquare, Eye, EyeOff } from "lucide-react";
+import toast from "react-hot-toast";
+import { authService } from "../services/auth.service.ts";
 
 interface ForgotPassResetFormProps {
   email: string;
@@ -10,19 +10,24 @@ interface ForgotPassResetFormProps {
   onSuccess: () => void;
 }
 
-const ForgotPassResetForm: React.FC<ForgotPassResetFormProps> = ({ email, onBackToLogin, onSuccess }) => {
-  const [pin, setPin] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+const ForgotPassResetForm: React.FC<ForgotPassResetFormProps> = ({
+  email,
+  onBackToLogin,
+  onSuccess,
+}) => {
+  const [pin, setPin] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (pin.length < 4) {
-      toast.error('PIN registration required.');
+      toast.error("PIN registration required.");
       return;
     }
     if (newPassword.length < 5) {
-      toast.error('New password must be at least 5 characters.');
+      toast.error("New password must be at least 5 characters.");
       return;
     }
 
@@ -31,12 +36,12 @@ const ForgotPassResetForm: React.FC<ForgotPassResetFormProps> = ({ email, onBack
       await authService.resetPassword({
         email,
         forgotToken: pin, // backend expects forgotToken field for the PIN
-        newPassword
+        newPassword,
       });
-      toast.success('Security Clearance Restored. Please login.');
+      toast.success("Security Clearance Restored. Please login.");
       onSuccess();
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Access Restoration Failed');
+      toast.error(error.response?.data?.message || "Access Restoration Failed");
     } finally {
       setIsLoading(false);
     }
@@ -49,21 +54,29 @@ const ForgotPassResetForm: React.FC<ForgotPassResetFormProps> = ({ email, onBack
       className="bg-white border border-gray-100 p-12 rounded-[3rem] shadow-2xl relative overflow-hidden"
     >
       <div className="mb-12">
-        <h2 className="text-4xl font-black text-black uppercase tracking-tighter mb-4">Complete Reset</h2>
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Verifying Dispatched PIN</p>
+        <h2 className="text-4xl font-black text-black uppercase tracking-tighter mb-4">
+          Complete Reset
+        </h2>
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">
+          Verifying Dispatched PIN
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="space-y-6">
           <div className="space-y-1">
-            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4">Security PIN</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4">
+              Security PIN
+            </label>
             <div className="relative">
               <KeySquare className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
                 maxLength={4}
                 value={pin}
-                onChange={(e) => setPin(e.target.value.replace(/[^a-zA-Z0-9]/g, ''))}
+                onChange={(e) =>
+                  setPin(e.target.value.replace(/[^a-zA-Z0-9]/g, ""))
+                }
                 className="w-full bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl py-4 pl-14 pr-6 text-2xl font-black tracking-[0.5em] transition-all outline-none"
                 placeholder="0000"
                 required
@@ -72,17 +85,33 @@ const ForgotPassResetForm: React.FC<ForgotPassResetFormProps> = ({ email, onBack
           </div>
 
           <div className="space-y-1">
-            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4">New Password</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4">
+              New Password
+            </label>
+
             <div className="relative">
               <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl py-4 pl-14 pr-6 text-sm font-bold transition-all outline-none focus:bg-white"
+                className="w-full bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl py-4 pl-14 pr-14 text-sm font-bold transition-all outline-none focus:bg-white"
                 placeholder="••••••••"
                 required
               />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
             </div>
           </div>
         </div>
